@@ -6,7 +6,11 @@ import os
 from pathlib import Path
 from typing import Optional
 from codewhisper.config import Config
-from codewhisper.providers import ClaudeProvider, OpenAIProvider, DeepSeekProvider, GLMProvider
+from codewhisper.providers import (
+    ClaudeProvider, OpenAIProvider, DeepSeekProvider, GLMProvider,
+    GeminiProvider, CohereProvider, MistralProvider, QwenProvider,
+    MoonshotProvider, ERNIEProvider, HuggingFaceProvider
+)
 
 # Fix Windows encoding issues
 if sys.platform == 'win32':
@@ -49,8 +53,8 @@ def init():
 
 @cli.command()
 @click.option('--name', '-n', required=True,
-              type=click.Choice(['anthropic', 'openai', 'deepseek', 'glm'], case_sensitive=False),
-              help='Provider name (anthropic, openai, deepseek, or glm)')
+              type=click.Choice(['anthropic', 'openai', 'deepseek', 'glm', 'gemini', 'cohere', 'mistral', 'qwen', 'moonshot', 'ernie', 'huggingface'], case_sensitive=False),
+              help='Provider name')
 @click.option('--api-key', '-k', required=True,
               help='API key for the provider')
 @click.option('--model', '-m',
@@ -393,6 +397,41 @@ def _load_providers(config: Config, provider_name: Optional[str] = None):
                 provider = GLMProvider(
                     api_key=api_key,
                     model=model or 'glm-4-plus'
+                )
+            elif name == 'gemini':
+                provider = GeminiProvider(
+                    api_key=api_key,
+                    model=model or 'gemini-1.5-pro'
+                )
+            elif name == 'cohere':
+                provider = CohereProvider(
+                    api_key=api_key,
+                    model=model or 'command-r-plus'
+                )
+            elif name == 'mistral':
+                provider = MistralProvider(
+                    api_key=api_key,
+                    model=model or 'mistral-large-latest'
+                )
+            elif name == 'qwen':
+                provider = QwenProvider(
+                    api_key=api_key,
+                    model=model or 'qwen-max'
+                )
+            elif name == 'moonshot':
+                provider = MoonshotProvider(
+                    api_key=api_key,
+                    model=model or 'moonshot-v1-32k'
+                )
+            elif name == 'ernie':
+                provider = ERNIEProvider(
+                    api_key=api_key,
+                    model=model or 'ernie-4.0'
+                )
+            elif name == 'huggingface':
+                provider = HuggingFaceProvider(
+                    api_key=api_key,
+                    model=model or 'meta-llama/Meta-Llama-3-70B-Instruct'
                 )
             else:
                 click.echo(click.style(f"⚠ Unknown provider: {name}", fg="yellow"))

@@ -1,74 +1,47 @@
-<div align="center">
-
-# 🔮 CodeWhisper
-
-### *Formerly nochatbot*
-
-**Zero-Barrier AI Assistant for Intelligent Codebase Understanding**
-
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/yourusername/codewhisper)
-[![Python](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
-[Features](#-key-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Architecture](#-architecture) • [Contributing](#-contributing)
-
-</div>
-
----
-
-## 🎯 Why CodeWhisper?
-
-Traditional code analysis tools require you to know what to ask. **CodeWhisper flips the script.**
-
-Instead of writing prompts, CodeWhisper:
-- **Proactively understands** your codebase through parallel AI agents
-- **Asks intelligent questions** to guide your exploration
-- **Builds a knowledge graph** connecting code relationships
-- **Provides contextual assistance** based on your journey through the code
-
-Perfect for:
-- 🚀 Onboarding to unfamiliar codebases
-- 🔍 Understanding complex system architectures
-- 📚 Documenting legacy projects
-- 🐛 Debugging across multiple files
-- 🎓 Learning from real-world code
-
----
-
-## ✨ Key Features
-
-### 🤖 Multi-AI Provider Support
-Work with your preferred AI provider or combine multiple providers for optimal results:
-- **Anthropic Claude** (Opus, Sonnet, Haiku)
-- **OpenAI** (GPT-4, GPT-3.5)
-- **DeepSeek** (DeepSeek-Chat)
-- **GLM/Zhipu AI** (GLM-4-Plus)
-
 ### ⚡ Parallel Scanning Architecture
+
+```
+Master Agent
+    ├── Sub-Agent 1 (Claude Opus)    → Analyzing auth.py
+    ├── Sub-Agent 2 (GPT-4)          → Analyzing database.py
+    ├── Sub-Agent 3 (Gemini Pro)     → Analyzing api.py
+    ├── Sub-Agent 4 (DeepSeek)       → Analyzing utils.py
+    └── Sub-Agent N (...)            → Analyzing ...
+         ↓
+    Knowledge Graph Builder
+         ↓
+    Intelligent Recommendations
+```
+
 - **Master-Agent Coordination**: Intelligent task distribution
 - **Configurable Agent Count**: Scale from 1 to 100+ parallel agents
 - **Async/Await Optimization**: Efficient API call management
-- **Thread-Based Parallelization**: Maximum throughput
+- **Provider Load Balancing**: Distribute work across multiple AI providers
+- **Cost Optimization**: Use cheaper models for simple files, premium models for complex code
 
 ### 🧠 Zero-Prompt Interaction
+
 - **Progressive Questioning**: 8 high-quality options at each step
 - **Context-Aware Recommendations**: Based on your selection history
 - **Seamless Mode Switching**: Guided exploration ↔ Free chat
 - **Intelligent Follow-ups**: AI anticipates your needs
+- **Multi-Language Support**: Works with any programming language
 
 ### 📊 Knowledge Graph Construction
+
 - **Automatic Relationship Mapping**: Files, functions, dependencies
 - **Semantic Understanding**: Beyond syntax to intent
 - **Visual Exploration**: Navigate code relationships
 - **Incremental Updates**: Efficient re-scanning
+- **Cross-File Analysis**: Understand how components interact
 
 ### 🔒 Privacy-First Design
+
 - **Explicit Permissions**: User-controlled access
 - **Configurable Exclusions**: Protect sensitive data
 - **Local Knowledge Base**: Your data stays on your machine
 - **Transparent Processing**: Clear data usage policies
+- **Provider Choice**: Use self-hosted models if needed
 
 ---
 
@@ -78,7 +51,7 @@ Work with your preferred AI provider or combine multiple providers for optimal r
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/codewhisper.git
+git clone https://github.com/realcarsonterry/codewhisper.git
 cd codewhisper
 
 # Install with pip
@@ -94,8 +67,10 @@ pip install -e ".[dev]"
 # Initialize configuration
 codewhisper init
 
-# Add your first AI provider
+# Add your first AI provider (choose one or add multiple)
 codewhisper add-provider -n anthropic -k YOUR_API_KEY -m claude-opus-4-20250514
+codewhisper add-provider -n openai -k YOUR_API_KEY -m gpt-4
+codewhisper add-provider -n gemini -k YOUR_API_KEY -m gemini-1.5-pro
 
 # Check status
 codewhisper status
@@ -110,199 +85,404 @@ codewhisper scan /path/to/your/project
 # Scan with specific provider and agent count
 codewhisper scan . --provider anthropic --max-agents 20
 
+# Use multiple providers for load balancing
+codewhisper scan ~/code/myapp --max-agents 50
+
 # Non-interactive scan (results only)
-codewhisper scan ~/code/myapp --no-interactive
+codewhisper scan . --no-interactive
 ```
 
 ---
 
-## 📖 Documentation
+## 🌐 Supported AI Providers
 
-### Table of Contents
-- [Installation Guide](#-installation-guide)
-- [Configuration](#-configuration)
-- [Usage Examples](#-usage-examples)
-- [Architecture Overview](#-architecture)
-- [API Provider Setup](#-api-provider-setup)
-- [Advanced Features](#-advanced-features)
-- [Performance Benchmarks](#-performance-benchmarks)
-- [Troubleshooting](#-troubleshooting)
+### 1. Anthropic Claude
+
+**Best for**: Deep code understanding, complex reasoning, long context
+
+```bash
+# Add provider
+codewhisper add-provider -n anthropic -k sk-ant-xxx -m claude-opus-4-20250514
+
+# Available models
+claude-opus-4-20250514    # Most capable, best for complex analysis
+claude-sonnet-4-20250514  # Balanced performance and cost
+claude-haiku-3-20240307   # Fast and cost-effective
+```
+
+**Get API Key**: https://console.anthropic.com/
 
 ---
 
-## 🔧 Installation Guide
+### 2. OpenAI
 
-### System Requirements
-
-- **Python**: 3.8 or higher
-- **Operating System**: Windows, macOS, Linux
-- **Memory**: 2GB RAM minimum (4GB+ recommended for large projects)
-- **Storage**: 100MB for application + space for knowledge base
-- **Network**: Internet connection for AI API calls
-
-### Installation Methods
-
-#### Method 1: Install from Source (Recommended)
+**Best for**: General purpose, fast responses, wide adoption
 
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/codewhisper.git
-cd codewhisper
+# Add provider
+codewhisper add-provider -n openai -k sk-xxx -m gpt-4-turbo
 
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Linux/macOS:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
-
-# Install package
-pip install -e .
+# Available models
+gpt-4-turbo              # Latest GPT-4 with 128k context
+gpt-4                    # Standard GPT-4
+gpt-3.5-turbo           # Fast and economical
 ```
 
-#### Method 2: Install from PyPI (Coming Soon)
+**Get API Key**: https://platform.openai.com/api-keys
+
+---
+
+### 3. Google Gemini
+
+**Best for**: Multimodal analysis, large context windows, free tier
 
 ```bash
-pip install codewhisper
+# Add provider
+codewhisper add-provider -n gemini -k YOUR_API_KEY -m gemini-1.5-pro
+
+# Available models
+gemini-1.5-pro          # 1M token context, best quality
+gemini-1.5-flash        # Fast and efficient
+gemini-pro              # Standard model
 ```
 
-#### Method 3: Development Installation
+**Get API Key**: https://makersuite.google.com/app/apikey
+
+---
+
+### 4. DeepSeek
+
+**Best for**: Code-specific tasks, cost-effective, Chinese support
 
 ```bash
-# Install with all development dependencies
-pip install -e ".[dev]"
+# Add provider
+codewhisper add-provider -n deepseek -k sk-xxx -m deepseek-chat
 
-# Verify installation
-pytest
-black --check nochatbot/
-mypy nochatbot/
+# Available models
+deepseek-chat           # General chat model
+deepseek-coder          # Specialized for code
 ```
 
-### Verifying Installation
+**Get API Key**: https://platform.deepseek.com/
+
+---
+
+### 5. GLM (智谱AI / Zhipu AI)
+
+**Best for**: Chinese codebases, bilingual support, domestic deployment
 
 ```bash
-# Check version
-codewhisper --version
+# Add provider
+codewhisper add-provider -n glm -k xxx.yyy -m glm-4-plus
 
-# View help
-codewhisper --help
+# Available models
+glm-4-plus              # Most capable
+glm-4                   # Standard model
+glm-3-turbo             # Fast and economical
+```
 
+**Get API Key**: https://open.bigmodel.cn/
+
+---
+
+### 6. Qwen (通义千问 / Alibaba Cloud)
+
+**Best for**: Alibaba Cloud ecosystem, Chinese language, enterprise
+
+```bash
+# Add provider
+codewhisper add-provider -n qwen -k sk-xxx -m qwen-max
+
+# Available models
+qwen-max                # Most capable
+qwen-plus               # Balanced
+qwen-turbo              # Fast and economical
+```
+
+**Get API Key**: https://dashscope.console.aliyun.com/
+
+---
+
+### 7. Moonshot (月之暗面 / Kimi)
+
+**Best for**: Long context (up to 128k), Chinese support, memory
+
+```bash
+# Add provider
+codewhisper add-provider -n moonshot -k sk-xxx -m moonshot-v1-32k
+
+# Available models
+moonshot-v1-128k        # 128k context window
+moonshot-v1-32k         # 32k context window
+moonshot-v1-8k          # 8k context window
+```
+
+**Get API Key**: https://platform.moonshot.cn/
+
+---
+
+### 8. Mistral AI
+
+**Best for**: European alternative, privacy-focused, open models
+
+```bash
+# Add provider
+codewhisper add-provider -n mistral -k xxx -m mistral-large-latest
+
+# Available models
+mistral-large-latest    # Most capable
+mistral-medium-latest   # Balanced
+mistral-small-latest    # Fast and economical
+```
+
+**Get API Key**: https://console.mistral.ai/
+
+---
+
+### 9. Cohere
+
+**Best for**: Enterprise features, RAG optimization, embeddings
+
+```bash
+# Add provider
+codewhisper add-provider -n cohere -k xxx -m command-r-plus
+
+# Available models
+command-r-plus          # Most capable, RAG optimized
+command-r               # Balanced
+command                 # Standard model
+```
+
+**Get API Key**: https://dashboard.cohere.com/
+
+---
+
+### 10. Baidu ERNIE (文心一言)
+
+**Best for**: Chinese market, Baidu ecosystem, domestic deployment
+
+```bash
+# Add provider
+codewhisper add-provider -n ernie -k xxx -m ernie-4.0
+
+# Available models
+ernie-4.0               # Most capable
+ernie-3.5               # Balanced
+ernie-turbo             # Fast and economical
+```
+
+**Get API Key**: https://console.bce.baidu.com/qianfan/
+
+---
+
+### 11. Hugging Face
+
+**Best for**: Open source models, self-hosted, customization
+
+```bash
+# Add provider
+codewhisper add-provider -n huggingface -k hf_xxx -m meta-llama/Llama-2-70b-chat-hf
+
+# Use any model from Hugging Face Hub
+# Examples:
+meta-llama/Llama-2-70b-chat-hf
+mistralai/Mixtral-8x7B-Instruct-v0.1
+codellama/CodeLlama-34b-Instruct-hf
+```
+
+**Get API Key**: https://huggingface.co/settings/tokens
+
+---
+
+## 📖 Advanced Usage
+
+### Multi-Provider Strategy
+
+Use different providers for different tasks:
+
+```bash
+# Use Claude for complex analysis
+codewhisper scan ./backend --provider anthropic --max-agents 10
+
+# Use GPT-4 for frontend code
+codewhisper scan ./frontend --provider openai --max-agents 20
+
+# Use DeepSeek for cost-effective bulk scanning
+codewhisper scan ./tests --provider deepseek --max-agents 50
+```
+
+### Load Balancing
+
+When you configure multiple providers, CodeWhisper automatically distributes work:
+
+```bash
+# Configure multiple providers
+codewhisper add-provider -n anthropic -k xxx -m claude-opus-4-20250514
+codewhisper add-provider -n openai -k xxx -m gpt-4-turbo
+codewhisper add-provider -n gemini -k xxx -m gemini-1.5-pro
+
+# Scan with load balancing (round-robin across all providers)
+codewhisper scan ./large-project --max-agents 60
+# Agent 1: Claude, Agent 2: OpenAI, Agent 3: Gemini, Agent 4: Claude, ...
+```
+
+### Cost Optimization
+
+```bash
+# Use cheaper models for initial scan
+codewhisper add-provider -n openai -k xxx -m gpt-3.5-turbo
+codewhisper scan . --provider openai --max-agents 50
+
+# Then use premium models for specific questions
+codewhisper add-provider -n anthropic -k xxx -m claude-opus-4-20250514
+# Interactive mode will use Claude for detailed analysis
+```
+
+---
+
+## 💰 Cost Comparison
+
+Approximate costs per 1M tokens (as of 2025):
+
+| Provider | Input | Output | Notes |
+|----------|-------|--------|-------|
+| Claude Opus | $15 | $75 | Best quality |
+| Claude Sonnet | $3 | $15 | Balanced |
+| GPT-4 Turbo | $10 | $30 | Fast |
+| GPT-3.5 Turbo | $0.50 | $1.50 | Economical |
+| Gemini Pro | Free* | Free* | Generous free tier |
+| DeepSeek | $0.14 | $0.28 | Very cheap |
+| GLM-4-Plus | ¥0.05 | ¥0.05 | ~$0.007 |
+| Qwen-Max | ¥0.04 | ¥0.12 | ~$0.006-$0.017 |
+| Moonshot | ¥0.012 | ¥0.012 | ~$0.0017 |
+
+*Gemini has generous free tier limits
+
+**Cost Optimization Tips:**
+- Use cheaper models (GPT-3.5, DeepSeek, GLM) for initial scanning
+- Use premium models (Claude Opus, GPT-4) for complex analysis
+- Mix providers to balance cost and quality
+- Chinese providers (GLM, Qwen, Moonshot) are extremely cost-effective
+
+---
+
+## 🎯 Use Cases
+
+### 1. Onboarding to New Codebase
+
+```bash
+# Scan the entire project
+codewhisper scan ~/new-project --max-agents 30
+
+# CodeWhisper will ask:
+# 1. "Would you like to understand the overall architecture?"
+# 2. "Which module interests you most?"
+# 3. "Should I explain the authentication flow?"
+# ... and 5 more intelligent questions
+```
+
+### 2. Debugging Complex Issues
+
+```bash
+# Scan specific modules
+codewhisper scan ./src/payment --provider anthropic
+
+# Ask targeted questions in interactive mode
+# CodeWhisper understands the context and relationships
+```
+
+### 3. Code Review Preparation
+
+```bash
+# Scan changed files
+codewhisper scan ./src --max-agents 20
+
+# Get insights about:
+# - Code quality issues
+# - Potential bugs
+# - Architecture concerns
+# - Best practice violations
+```
+
+---
+
+## 🔧 CLI Commands
+
+```bash
 # Initialize configuration
 codewhisper init
-```
 
----
+# Add/update AI provider
+codewhisper add-provider -n <name> -k <api-key> -m <model>
 
-## ⚙️ Configuration
+# List all configured providers
+codewhisper list-providers
 
-### Configuration File Location
-
-CodeWhisper stores configuration at `~/.codewhisper/config.json`
-
-### Configuration Structure
-
-```json
-{
-  "version": "1.0.0",
-  "providers": {
-    "anthropic": {
-      "api_key": "sk-ant-...",
-      "model": "claude-opus-4-20250514"
-    },
-    "openai": {
-      "api_key": "sk-...",
-      "model": "gpt-4"
-    },
-    "deepseek": {
-      "api_key": "sk-...",
-      "model": "deepseek-chat"
-    },
-    "glm": {
-      "api_key": "xxx.yyy",
-      "model": "glm-4-plus"
-    }
-  },
-  "scanning": {
-    "max_agents": 100,
-    "exclude_dirs": [
-      "node_modules",
-      ".git",
-      "__pycache__",
-      ".venv",
-      "venv",
-      "dist",
-      "build"
-    ],
-    "exclude_files": [
-      "*.pyc",
-      "*.log",
-      ".DS_Store"
-    ],
-    "max_file_size_mb": 10
-  },
-  "knowledge_base": {
-    "path": "~/.codewhisper/knowledge",
-    "vector_db": "chromadb"
-  },
-  "privacy": {
-    "permissions_granted": false,
-    "exclude_paths": []
-  }
-}
-```
-
-### Managing Configuration
-
-```bash
-# View current configuration
+# Show configuration status
 codewhisper status
 
-# Add a provider
-codewhisper add-provider -n anthropic -k YOUR_KEY -m claude-opus-4-20250514
+# Scan a directory
+codewhisper scan <path> [OPTIONS]
+  --provider TEXT        Specific provider to use
+  --max-agents INTEGER   Maximum parallel agents (default: 10)
+  --no-interactive       Skip interactive mode
 
-# List all providers
-nochatbot list-providers
+# Show version
+codewhisper --version
 
-# Reset configuration
-codewhisper init
+# Show help
+codewhisper --help
 ```
 
 ---
 
-## 💡 Usage Examples
+## 🤝 Contributing
 
-### Command Line Interface
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-#### Basic Scanning
+### Adding New AI Providers
 
-```bash
-# Scan current directory
-codewhisper scan .
+To add a new AI provider:
 
-# Scan specific path
-codewhisper scan /path/to/project
+1. Create a new file in `codewhisper/providers/`
+2. Extend the `AIProvider` base class
+3. Implement required methods:
+   - `async send_message()`
+   - `async stream_response()`
+   - `get_cost_per_token()`
+4. Add to `codewhisper/providers/__init__.py`
+5. Update CLI to support the new provider
+6. Add documentation and tests
 
-# Scan with custom agent count
-codewhisper scan . --max-agents 50
-```
+See existing providers for examples.
 
-#### Provider Selection
+---
 
-```bash
-# Use specific provider
-codewhisper scan . --provider openai
+## 📝 License
 
-# Use all configured providers (default)
-codewhisper scan .
-```
+MIT License - see [LICENSE](LICENSE) file for details.
 
-#### Interactive Mode
+---
 
-After scanning, CodeWhisper launches an interactive interface:
+## 🙏 Acknowledgments
 
-```
-Chat with your codebase! Ask questions about the scanned project.
+- Built with [Claude Code](https://claude.ai/code)
+- Inspired by the need for zero-barrier AI assistance
+- Thanks to all AI providers for their APIs
 
-You: What is the main entry point of this application?
+---
+
+## 📞 Support
+
+- **Issues**: https://github.com/realcarsonterry/codewhisper/issues
+- **Discussions**: https://github.com/realcarsonterry/codewhisper/discussions
+
+---
+
+<div align="center">
+
+**Made with ❤️ by developers, for developers**
+
+[⭐ Star us on GitHub](https://github.com/realcarsonterry/codewhisper) • [🐛 Report Bug](https://github.com/realcarsonterry/codewhisper/issues) • [💡 Request Feature](https://github.com/realcarsonterry/codewhisper/issues)
+
+</div>
