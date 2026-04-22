@@ -2,7 +2,7 @@
 
 # 🔮 CodeWhisper
 
-### *Formerly nochatbot*
+
 
 **Zero-Barrier AI Assistant for Intelligent Codebase Understanding**
 
