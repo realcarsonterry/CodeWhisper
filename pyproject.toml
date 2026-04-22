@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nochatbot"
+version = "0.1.0"
+description = "AI-powered codebase analysis and recommendation tool"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Terry"}
+]
+dependencies = [
+    "anthropic>=0.40.0",
+    "openai>=1.0.0",
+    "click>=8.1.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0",
+    "aiofiles>=23.0.0",
+    "gitpython>=3.1.0",
+]
+
+[project.scripts]
+nochatbot = "nochatbot.cli:cli"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
