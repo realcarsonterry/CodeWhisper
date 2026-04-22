@@ -5,10 +5,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
-from nochatbot.providers.base import AIProvider
-from nochatbot.scanner.file_discovery import FileDiscovery
-from nochatbot.scanner.task_queue import TaskQueue
-from nochatbot.scanner.sub_agent import SubAgent
+from codewhisper.providers.base import AIProvider
+from codewhisper.scanner.file_discovery import FileDiscovery
+from codewhisper.scanner.task_queue import TaskQueue
+from codewhisper.scanner.sub_agent import SubAgent
 
 
 class MasterAgent:

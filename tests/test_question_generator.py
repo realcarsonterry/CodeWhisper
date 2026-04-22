@@ -3,7 +3,7 @@
 import json
 import pytest
 from unittest.mock import Mock, AsyncMock
-from nochatbot.recommendation import QuestionGenerator, QuestionResult
+from codewhisper.recommendation import QuestionGenerator, QuestionResult
 
 
 class TestQuestionGenerator:

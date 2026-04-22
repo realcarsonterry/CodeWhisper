@@ -1,10 +1,10 @@
-"""AI Provider layer for No Chat Bot.
+"""AI Provider layer for CodeWhisper.
 
 This module provides a unified interface for interacting with different AI providers
 including Claude (Anthropic), OpenAI, DeepSeek, and GLM (Zhipu AI).
 
 Example usage:
-    from nochatbot.providers import ClaudeProvider, OpenAIProvider, DeepSeekProvider, GLMProvider
+    from codewhisper.providers import ClaudeProvider, OpenAIProvider, DeepSeekProvider, GLMProvider
 
     # Initialize a provider
     provider = ClaudeProvider(api_key="your-api-key", model="claude-opus-4-20250514")
@@ -20,11 +20,11 @@ Example usage:
     cost = provider.calculate_cost(input_tokens=1000, output_tokens=500)
 """
 
-from nochatbot.providers.base import AIProvider
-from nochatbot.providers.claude import ClaudeProvider
-from nochatbot.providers.openai import OpenAIProvider
-from nochatbot.providers.deepseek import DeepSeekProvider
-from nochatbot.providers.glm import GLMProvider
+from codewhisper.providers.base import AIProvider
+from codewhisper.providers.claude import ClaudeProvider
+from codewhisper.providers.openai import OpenAIProvider
+from codewhisper.providers.deepseek import DeepSeekProvider
+from codewhisper.providers.glm import GLMProvider
 
 __all__ = [
     'AIProvider',

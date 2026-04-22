@@ -9,8 +9,8 @@ using AI providers. It consists of:
 - MasterAgent: Coordinates the entire scanning process
 
 Example usage:
-    from nochatbot.scanner import MasterAgent
-    from nochatbot.providers import ClaudeProvider
+    from codewhisper.scanner import MasterAgent
+    from codewhisper.providers import ClaudeProvider
 
     # Initialize providers
     provider = ClaudeProvider(api_key="your-key", model="claude-opus-4-20250514")
@@ -29,10 +29,10 @@ Example usage:
     graph = master.build_knowledge_graph()
 """
 
-from nochatbot.scanner.file_discovery import FileDiscovery
-from nochatbot.scanner.task_queue import TaskQueue
-from nochatbot.scanner.sub_agent import SubAgent
-from nochatbot.scanner.master_agent import MasterAgent
+from codewhisper.scanner.file_discovery import FileDiscovery
+from codewhisper.scanner.task_queue import TaskQueue
+from codewhisper.scanner.sub_agent import SubAgent
+from codewhisper.scanner.master_agent import MasterAgent
 
 __all__ = [
     'FileDiscovery',

@@ -3,9 +3,9 @@ requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nochatbot"
+name = "codewhisper"
 version = "0.1.0"
-description = "AI-powered codebase analysis and recommendation tool"
+description = "Zero-barrier AI assistant for intelligent codebase understanding"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [project.scripts]
-nochatbot = "nochatbot.cli:cli"
+codewhisper = "codewhisper.cli:cli"
 
 [project.optional-dependencies]
 dev = [

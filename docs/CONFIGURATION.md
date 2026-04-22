@@ -19,8 +19,8 @@ This guide provides comprehensive documentation for configuring No Chat Bot, inc
 
 No Chat Bot stores its configuration in a JSON file at:
 
-- **Linux/macOS**: `~/.nochatbot/config.json`
-- **Windows**: `%USERPROFILE%\.nochatbot\config.json`
+- **Linux/macOS**: `~/.codewhisper/config.json`
+- **Windows**: `%USERPROFILE%\.codewhisper\config.json`
 
 The configuration directory is created automatically on first run with default settings.
 
@@ -74,7 +74,7 @@ The configuration directory is created automatically on first run with default s
     "respect_gitignore": true
   },
   "knowledge_base": {
-    "path": "~/.nochatbot/knowledge",
+    "path": "~/.codewhisper/knowledge",
     "vector_db": "chromadb",
     "max_entries": 10000,
     "embedding_model": "text-embedding-ada-002"
@@ -202,7 +202,7 @@ config.add_provider(
 
 #### Manual Configuration
 
-Edit `~/.nochatbot/config.json` and add provider configuration under the `providers` key.
+Edit `~/.codewhisper/config.json` and add provider configuration under the `providers` key.
 
 ### Removing a Provider
 
@@ -337,7 +337,7 @@ Whether to respect `.gitignore` patterns when scanning.
 ```json
 {
   "knowledge_base": {
-    "path": "~/.nochatbot/knowledge",
+    "path": "~/.codewhisper/knowledge",
     "vector_db": "chromadb",
     "max_entries": 10000,
     "embedding_model": "text-embedding-ada-002"
@@ -350,7 +350,7 @@ Whether to respect `.gitignore` patterns when scanning.
 #### `path`
 
 **Type**: String  
-**Default**: `~/.nochatbot/knowledge`
+**Default**: `~/.codewhisper/knowledge`
 
 Directory where knowledge base data is stored.
 
@@ -523,20 +523,20 @@ config.save_config()
 
 ```bash
 # Linux/macOS
-cp ~/.nochatbot/config.json ~/.nochatbot/config.json.backup
+cp ~/.codewhisper/config.json ~/.codewhisper/config.json.backup
 
 # Windows
-copy %USERPROFILE%\.nochatbot\config.json %USERPROFILE%\.nochatbot\config.json.backup
+copy %USERPROFILE%\.codewhisper\config.json %USERPROFILE%\.codewhisper\config.json.backup
 ```
 
 ### Restore Configuration
 
 ```bash
 # Linux/macOS
-cp ~/.nochatbot/config.json.backup ~/.nochatbot/config.json
+cp ~/.codewhisper/config.json.backup ~/.codewhisper/config.json
 
 # Windows
-copy %USERPROFILE%\.nochatbot\config.json.backup %USERPROFILE%\.nochatbot\config.json
+copy %USERPROFILE%\.codewhisper\config.json.backup %USERPROFILE%\.codewhisper\config.json
 ```
 
 ## Advanced Configuration
@@ -547,15 +547,15 @@ Create multiple configuration profiles for different use cases:
 
 ```bash
 # Development profile
-export NOCHATBOT_CONFIG_DIR=~/.nochatbot-dev
+export NOCHATBOT_CONFIG_DIR=~/.codewhisper-dev
 
 # Production profile
-export NOCHATBOT_CONFIG_DIR=~/.nochatbot-prod
+export NOCHATBOT_CONFIG_DIR=~/.codewhisper-prod
 ```
 
 ### Project-Specific Configuration
 
-Create a `.nochatbot.json` file in your project root:
+Create a `.codewhisper.json` file in your project root:
 
 ```json
 {
@@ -570,7 +570,7 @@ Project-specific settings override global configuration.
 
 ### Custom Exclusion Patterns
 
-Create a `.nochatbotignore` file (similar to `.gitignore`):
+Create a `.codewhisperignore` file (similar to `.gitignore`):
 
 ```
 # Ignore all log files
@@ -691,7 +691,7 @@ cache/
 
 ### Configuration Not Loading
 
-1. Check file location: `~/.nochatbot/config.json`
+1. Check file location: `~/.codewhisper/config.json`
 2. Verify JSON syntax (use a JSON validator)
 3. Check file permissions (must be readable)
 4. Look for error messages in logs

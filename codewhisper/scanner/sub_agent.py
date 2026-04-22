@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 from threading import Thread
 
-from nochatbot.providers.base import AIProvider
-from nochatbot.scanner.task_queue import TaskQueue
+from codewhisper.providers.base import AIProvider
+from codewhisper.scanner.task_queue import TaskQueue
 
 
 class SubAgent:

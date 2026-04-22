@@ -1,4 +1,4 @@
-"""Conversation context management for No Chat Bot."""
+"""Conversation context management for CodeWhisper."""
 
 from dataclasses import dataclass, field
 from datetime import datetime

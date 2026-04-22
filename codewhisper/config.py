@@ -1,4 +1,4 @@
-"""Configuration management for No Chat Bot."""
+"""Configuration management for CodeWhisper."""
 
 import os
 import json
@@ -7,14 +7,14 @@ from typing import Dict, Any, Optional, List
 
 
 class Config:
-    """Configuration manager for No Chat Bot.
+    """Configuration manager for CodeWhisper.
 
-    Manages configuration file at ~/.nochatbot/config.json with support for
+    Manages configuration file at ~/.codewhisper/config.json with support for
     multiple AI providers, scanning settings, knowledge base configuration,
     and privacy settings.
     """
 
-    CONFIG_DIR = Path.home() / ".nochatbot"
+    CONFIG_DIR = Path.home() / ".codewhisper"
     CONFIG_FILE = CONFIG_DIR / "config.json"
 
     def __init__(self):

@@ -89,7 +89,7 @@ No Chat Bot is an AI-powered codebase analysis and recommendation tool designed 
 │                    Storage Layer                             │
 │  ┌──────────────────┐         ┌──────────────────────────┐ │
 │  │  Configuration   │         │  Knowledge Base          │ │
-│  │  (~/.nochatbot)  │         │  (Vector DB - Future)    │ │
+│  │  (~/.codewhisper)  │         │  (Vector DB - Future)    │ │
 │  └──────────────────┘         └──────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -101,7 +101,7 @@ No Chat Bot is an AI-powered codebase analysis and recommendation tool designed 
 **Responsibility**: Manages application configuration, API keys, and user preferences.
 
 **Key Features**:
-- Stores configuration in `~/.nochatbot/config.json`
+- Stores configuration in `~/.codewhisper/config.json`
 - Manages multiple AI provider credentials
 - Handles scanning preferences and exclusions
 - Privacy settings and permissions
@@ -121,7 +121,7 @@ No Chat Bot is an AI-powered codebase analysis and recommendation tool designed 
         "max_file_size_mb": 10
     },
     "knowledge_base": {
-        "path": "~/.nochatbot/knowledge",
+        "path": "~/.codewhisper/knowledge",
         "vector_db": "chromadb"
     },
     "privacy": {

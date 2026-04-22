@@ -4,8 +4,8 @@ This example demonstrates how to use the InteractiveInterface class
 to create an interactive session with No Chat Bot.
 """
 
-from nochatbot.interaction import InteractiveInterface
-from nochatbot.providers.base import AIProvider
+from codewhisper.interaction import InteractiveInterface
+from codewhisper.providers.base import AIProvider
 
 
 # Mock AI Provider for demonstration

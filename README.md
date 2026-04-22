@@ -1,140 +1,205 @@
-# No Chat Bot
+<div align="center">
 
-An AI-powered codebase analysis and recommendation tool that helps developers understand and explore code repositories through intelligent question-based navigation and contextual chat assistance.
+# 🔮 CodeWhisper
 
-## Features
+### *Formerly nochatbot*
 
-- **Intelligent Question-Based Navigation**: Explore your codebase through AI-generated questions and options tailored to your project
-- **Context-Aware Chat Bot**: Get precise assistance based on your selection history and conversation context
-- **Multi-Provider Support**: Works with multiple AI providers (Anthropic Claude, OpenAI, DeepSeek)
-- **Smart Code Scanning**: Automatically discovers and analyzes project structure, dependencies, and key files
-- **Knowledge Base Integration**: Builds and maintains project knowledge for better recommendations
-- **Privacy-Focused**: Configurable permissions and exclusion paths for sensitive data
+**Zero-Barrier AI Assistant for Intelligent Codebase Understanding**
 
-## Quick Start
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/yourusername/codewhisper)
+[![Python](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+[Features](#-key-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Architecture](#-architecture) • [Contributing](#-contributing)
+
+</div>
+
+---
+
+## 🎯 Why CodeWhisper?
+
+Traditional code analysis tools require you to know what to ask. **CodeWhisper flips the script.**
+
+Instead of writing prompts, CodeWhisper:
+- **Proactively understands** your codebase through parallel AI agents
+- **Asks intelligent questions** to guide your exploration
+- **Builds a knowledge graph** connecting code relationships
+- **Provides contextual assistance** based on your journey through the code
+
+Perfect for:
+- 🚀 Onboarding to unfamiliar codebases
+- 🔍 Understanding complex system architectures
+- 📚 Documenting legacy projects
+- 🐛 Debugging across multiple files
+- 🎓 Learning from real-world code
+
+---
+
+## ✨ Key Features
+
+### 🤖 Multi-AI Provider Support
+Work with your preferred AI provider or combine multiple providers for optimal results:
+- **Anthropic Claude** (Opus, Sonnet, Haiku)
+- **OpenAI** (GPT-4, GPT-3.5)
+- **DeepSeek** (DeepSeek-Chat)
+- **GLM/Zhipu AI** (GLM-4-Plus)
+
+### ⚡ Parallel Scanning Architecture
+- **Master-Agent Coordination**: Intelligent task distribution
+- **Configurable Agent Count**: Scale from 1 to 100+ parallel agents
+- **Async/Await Optimization**: Efficient API call management
+- **Thread-Based Parallelization**: Maximum throughput
+
+### 🧠 Zero-Prompt Interaction
+- **Progressive Questioning**: 8 high-quality options at each step
+- **Context-Aware Recommendations**: Based on your selection history
+- **Seamless Mode Switching**: Guided exploration ↔ Free chat
+- **Intelligent Follow-ups**: AI anticipates your needs
+
+### 📊 Knowledge Graph Construction
+- **Automatic Relationship Mapping**: Files, functions, dependencies
+- **Semantic Understanding**: Beyond syntax to intent
+- **Visual Exploration**: Navigate code relationships
+- **Incremental Updates**: Efficient re-scanning
+
+### 🔒 Privacy-First Design
+- **Explicit Permissions**: User-controlled access
+- **Configurable Exclusions**: Protect sensitive data
+- **Local Knowledge Base**: Your data stays on your machine
+- **Transparent Processing**: Clear data usage policies
+
+---
+
+## 🚀 Quick Start
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/nochatbot.git
-cd nochatbot
+git clone https://github.com/yourusername/codewhisper.git
+cd codewhisper
 
-# Install dependencies
-pip install -r requirements.txt
+# Install with pip
+pip install -e .
 
-# Or install in development mode
+# Or install with development dependencies
+pip install -e ".[dev]"
+```
+
+### Initial Configuration
+
+```bash
+# Initialize configuration
+codewhisper init
+
+# Add your first AI provider
+codewhisper add-provider -n anthropic -k YOUR_API_KEY -m claude-opus-4-20250514
+
+# Check status
+codewhisper status
+```
+
+### Your First Scan
+
+```bash
+# Scan a project directory
+codewhisper scan /path/to/your/project
+
+# Scan with specific provider and agent count
+codewhisper scan . --provider anthropic --max-agents 20
+
+# Non-interactive scan (results only)
+codewhisper scan ~/code/myapp --no-interactive
+```
+
+---
+
+## 📖 Documentation
+
+### Table of Contents
+- [Installation Guide](#-installation-guide)
+- [Configuration](#-configuration)
+- [Usage Examples](#-usage-examples)
+- [Architecture Overview](#-architecture)
+- [API Provider Setup](#-api-provider-setup)
+- [Advanced Features](#-advanced-features)
+- [Performance Benchmarks](#-performance-benchmarks)
+- [Troubleshooting](#-troubleshooting)
+
+---
+
+## 🔧 Installation Guide
+
+### System Requirements
+
+- **Python**: 3.8 or higher
+- **Operating System**: Windows, macOS, Linux
+- **Memory**: 2GB RAM minimum (4GB+ recommended for large projects)
+- **Storage**: 100MB for application + space for knowledge base
+- **Network**: Internet connection for AI API calls
+
+### Installation Methods
+
+#### Method 1: Install from Source (Recommended)
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/codewhisper.git
+cd codewhisper
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Linux/macOS:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
+
+# Install package
 pip install -e .
 ```
 
-### Configuration
-
-Set up your AI provider API key:
+#### Method 2: Install from PyPI (Coming Soon)
 
 ```bash
-# For Anthropic Claude
-export ANTHROPIC_API_KEY='your-api-key-here'
-
-# For OpenAI
-export OPENAI_API_KEY='your-api-key-here'
+pip install codewhisper
 ```
 
-Configure the tool:
+#### Method 3: Development Installation
 
 ```bash
-nochatbot config --provider anthropic --api-key YOUR_API_KEY
+# Install with all development dependencies
+pip install -e ".[dev]"
+
+# Verify installation
+pytest
+black --check nochatbot/
+mypy nochatbot/
 ```
 
-### Basic Usage
-
-Scan a codebase:
+### Verifying Installation
 
 ```bash
-nochatbot scan /path/to/your/project
-```
+# Check version
+codewhisper --version
 
-Scan with specific provider:
-
-```bash
-nochatbot scan /path/to/your/project --provider openai
-```
-
-## Usage
-
-### Command Line Interface
-
-#### Scan Command
-
-Analyze a codebase and generate intelligent recommendations:
-
-```bash
-nochatbot scan <path> [OPTIONS]
-
-Options:
-  --provider [anthropic|openai]  AI provider to use (default: anthropic)
-  --max-agents INTEGER           Maximum number of scanning agents (default: 100)
-  --exclude-dir TEXT             Additional directories to exclude
-  --exclude-file TEXT            Additional file patterns to exclude
-```
-
-#### Config Command
-
-Manage configuration settings:
-
-```bash
-# Add a provider
-nochatbot config --provider anthropic --api-key YOUR_KEY --model claude-opus-4-20250514
-
-# Grant file scanning permissions
-nochatbot config --grant-permissions
-
-# Add exclusion paths
-nochatbot config --exclude-path /path/to/sensitive/data
-```
-
-### Python API
-
-```python
-from nochatbot.config import Config
-from nochatbot.providers import ClaudeProvider
-from nochatbot.recommendation import QuestionGenerator
-from nochatbot.interaction import IntelligentChatBot, ConversationContext
+# View help
+codewhisper --help
 
 # Initialize configuration
-config = Config()
-
-# Set up AI provider
-provider = ClaudeProvider(
-    api_key=config.get_provider('anthropic')['api_key'],
-    model='claude-opus-4-20250514'
-)
-
-# Generate questions based on project scan
-generator = QuestionGenerator(provider)
-result = generator.generate_questions({
-    'type': 'first_time',
-    'scan_results': {
-        'file_count': 150,
-        'languages': {'Python': 120, 'JavaScript': 30},
-        'key_files': ['main.py', 'config.py']
-    }
-})
-
-print(result.question)
-for option in result.options:
-    print(f"- {option['text']}: {option['description']}")
-
-# Use the chat bot
-context = ConversationContext()
-chatbot = IntelligentChatBot(context, provider)
-
-response = await chatbot.chat("How does the configuration system work?")
-print(response)
+codewhisper init
 ```
 
-## Configuration
+---
 
-Configuration is stored in `~/.nochatbot/config.json`. See [docs/CONFIGURATION.md](docs/CONFIGURATION.md) for detailed configuration options.
+## ⚙️ Configuration
+
+### Configuration File Location
+
+CodeWhisper stores configuration at `~/.codewhisper/config.json`
 
 ### Configuration Structure
 
@@ -143,18 +208,42 @@ Configuration is stored in `~/.nochatbot/config.json`. See [docs/CONFIGURATION.m
   "version": "1.0.0",
   "providers": {
     "anthropic": {
-      "api_key": "your-key",
+      "api_key": "sk-ant-...",
       "model": "claude-opus-4-20250514"
+    },
+    "openai": {
+      "api_key": "sk-...",
+      "model": "gpt-4"
+    },
+    "deepseek": {
+      "api_key": "sk-...",
+      "model": "deepseek-chat"
+    },
+    "glm": {
+      "api_key": "xxx.yyy",
+      "model": "glm-4-plus"
     }
   },
   "scanning": {
     "max_agents": 100,
-    "exclude_dirs": ["node_modules", ".git", "__pycache__"],
-    "exclude_files": ["*.pyc", "*.log"],
+    "exclude_dirs": [
+      "node_modules",
+      ".git",
+      "__pycache__",
+      ".venv",
+      "venv",
+      "dist",
+      "build"
+    ],
+    "exclude_files": [
+      "*.pyc",
+      "*.log",
+      ".DS_Store"
+    ],
     "max_file_size_mb": 10
   },
   "knowledge_base": {
-    "path": "~/.nochatbot/knowledge",
+    "path": "~/.codewhisper/knowledge",
     "vector_db": "chromadb"
   },
   "privacy": {
@@ -164,106 +253,56 @@ Configuration is stored in `~/.nochatbot/config.json`. See [docs/CONFIGURATION.m
 }
 ```
 
-## Architecture
-
-No Chat Bot uses a modular architecture with the following key components:
-
-- **Scanner Engine**: Multi-agent system for parallel codebase analysis
-- **AI Provider Layer**: Unified interface for multiple AI providers
-- **Question Generator**: Creates intelligent, context-aware questions
-- **Chat Bot**: Provides contextual assistance based on user history
-- **Configuration Manager**: Handles settings and API keys
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture documentation.
-
-## Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
-
-- Code style and standards
-- Development setup
-- Testing requirements
-- Pull request process
-
-## Development
-
-### Setup Development Environment
+### Managing Configuration
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/nochatbot.git
-cd nochatbot
+# View current configuration
+codewhisper status
 
-# Install development dependencies
-pip install -e ".[dev]"
+# Add a provider
+codewhisper add-provider -n anthropic -k YOUR_KEY -m claude-opus-4-20250514
 
-# Run tests
-pytest
+# List all providers
+nochatbot list-providers
 
-# Format code
-black nochatbot/
-
-# Type checking
-mypy nochatbot/
+# Reset configuration
+codewhisper init
 ```
-
-### Running Tests
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=nochatbot --cov-report=html
-
-# Run specific test file
-pytest tests/test_config.py
-```
-
-## Requirements
-
-- Python 3.8 or higher
-- API key for at least one supported AI provider
-- Internet connection for AI API calls
-
-### Dependencies
-
-- `anthropic>=0.40.0` - Anthropic Claude API client
-- `openai>=1.0.0` - OpenAI API client
-- `click>=8.1.0` - Command-line interface framework
-- `python-dotenv>=1.0.0` - Environment variable management
-- `pyyaml>=6.0` - YAML configuration support
-- `aiofiles>=23.0.0` - Async file operations
-- `gitpython>=3.1.0` - Git repository analysis
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-For issues, questions, or contributions:
-
-- Open an issue on GitHub
-- Check the [documentation](docs/)
-- Review existing issues and discussions
-
-## Roadmap
-
-- [ ] Vector database integration for knowledge base
-- [ ] Support for more AI providers
-- [ ] Web interface
-- [ ] IDE plugins (VS Code, JetBrains)
-- [ ] Team collaboration features
-- [ ] Custom question templates
-
-## Acknowledgments
-
-Built with:
-- Anthropic Claude API
-- OpenAI API
-- Python ecosystem
 
 ---
 
-Made with care for developers who want to understand code better.
+## 💡 Usage Examples
+
+### Command Line Interface
+
+#### Basic Scanning
+
+```bash
+# Scan current directory
+codewhisper scan .
+
+# Scan specific path
+codewhisper scan /path/to/project
+
+# Scan with custom agent count
+codewhisper scan . --max-agents 50
+```
+
+#### Provider Selection
+
+```bash
+# Use specific provider
+codewhisper scan . --provider openai
+
+# Use all configured providers (default)
+codewhisper scan .
+```
+
+#### Interactive Mode
+
+After scanning, CodeWhisper launches an interactive interface:
+
+```
+Chat with your codebase! Ask questions about the scanned project.
+
+You: What is the main entry point of this application?

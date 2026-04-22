@@ -1,12 +1,12 @@
-"""Command-line interface for No Chat Bot."""
+"""Command-line interface for CodeWhisper."""
 
 import click
 import sys
 import os
 from pathlib import Path
 from typing import Optional
-from nochatbot.config import Config
-from nochatbot.providers import ClaudeProvider, OpenAIProvider, DeepSeekProvider, GLMProvider
+from codewhisper.config import Config
+from codewhisper.providers import ClaudeProvider, OpenAIProvider, DeepSeekProvider, GLMProvider
 
 # Fix Windows encoding issues
 if sys.platform == 'win32':
@@ -19,7 +19,7 @@ if sys.platform == 'win32':
 @click.group()
 @click.version_option(version="0.1.0")
 def cli():
-    """No Chat Bot - AI-powered codebase analysis and recommendation tool.
+    """CodeWhisper - Zero-barrier AI assistant for intelligent codebase understanding.
 
     A smart assistant that scans your codebase, builds a knowledge base,
     and provides intelligent recommendations through interactive chat.
@@ -29,7 +29,7 @@ def cli():
 
 @cli.command()
 def init():
-    """Initialize No Chat Bot configuration.
+    """Initialize CodeWhisper configuration.
 
     Creates the configuration directory and file with default settings.
     This is automatically done on first use, but you can run this command
@@ -110,7 +110,7 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
         # Convert path to absolute
         scan_path = Path(path).resolve()
 
-        click.echo(click.style(f"\nNo Chat Bot - Codebase Scanner", fg="cyan", bold=True))
+        click.echo(click.style(f"\nCodeWhisper - Codebase Scanner", fg="cyan", bold=True))
         click.echo(f"Target: {scan_path}\n")
 
         # Check permissions
@@ -129,7 +129,7 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
         click.echo(click.style(f"\n✓ Loaded {len(providers)} provider(s)", fg="green"))
 
         # Import here to avoid circular dependencies
-        from nochatbot.scanner.master_agent import MasterAgent
+        from codewhisper.scanner.master_agent import MasterAgent
 
         # Get scanning configuration
         scan_config = config.get_scanning_config()
@@ -203,7 +203,7 @@ def status():
     try:
         config = Config()
 
-        click.echo(click.style("\nNo Chat Bot - Status", fg="cyan", bold=True))
+        click.echo(click.style("\nCodeWhisper - Status", fg="cyan", bold=True))
         click.echo(click.style("="*60, fg="cyan"))
 
         # Configuration file
@@ -318,7 +318,7 @@ def _check_permissions(config: Config, path: Path) -> bool:
     click.echo(click.style("PERMISSION REQUEST", fg="yellow", bold=True))
     click.echo(click.style("="*60, fg="yellow"))
 
-    click.echo("\nNo Chat Bot needs permission to scan your codebase.")
+    click.echo("\nCodeWhisper needs permission to scan your codebase.")
     click.echo("\nWhat will be read:")
     click.echo("  • Source code files in the specified directory")
     click.echo("  • File structure and organization")
@@ -326,7 +326,7 @@ def _check_permissions(config: Config, path: Path) -> bool:
 
     click.echo("\nHow data will be processed:")
     click.echo("  • Files are sent to configured AI providers for analysis")
-    click.echo("  • Analysis results are stored locally in ~/.nochatbot/")
+    click.echo("  • Analysis results are stored locally in ~/.codewhisper/")
     click.echo("  • No data is stored on external servers except during API calls")
     click.echo("  • You can exclude specific paths from scanning")
 
@@ -415,8 +415,8 @@ def _start_interactive_interface(master_agent, provider, scan_path: Path):
         provider: AI provider to use for chat
         scan_path: Path that was scanned
     """
-    from nochatbot.interaction.context import ConversationContext
-    from nochatbot.interaction.chatbot import IntelligentChatBot
+    from codewhisper.interaction.context import ConversationContext
+    from codewhisper.interaction.chatbot import IntelligentChatBot
     import uuid
 
     # Create conversation context with unique session ID

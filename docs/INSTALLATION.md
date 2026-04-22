@@ -288,8 +288,8 @@ $env:OPENAI_API_KEY='sk-...'
 nochatbot config --provider anthropic --api-key YOUR_API_KEY
 
 # Or manually edit config file
-# Linux/macOS: ~/.nochatbot/config.json
-# Windows: %USERPROFILE%\.nochatbot\config.json
+# Linux/macOS: ~/.codewhisper/config.json
+# Windows: %USERPROFILE%\.codewhisper\config.json
 ```
 
 #### Option C: .env File (Development)
@@ -564,13 +564,13 @@ y
 
 ```bash
 # Linux/macOS
-rm -rf ~/.nochatbot
+rm -rf ~/.codewhisper
 
 # Windows Command Prompt
-rmdir /s %USERPROFILE%\.nochatbot
+rmdir /s %USERPROFILE%\.codewhisper
 
 # Windows PowerShell
-Remove-Item -Recurse -Force $env:USERPROFILE\.nochatbot
+Remove-Item -Recurse -Force $env:USERPROFILE\.codewhisper
 ```
 
 ### Remove Virtual Environment

@@ -2,7 +2,7 @@
 
 from typing import Dict, Any, AsyncIterator, Optional
 import anthropic
-from nochatbot.providers.base import AIProvider
+from codewhisper.providers.base import AIProvider
 
 
 class ClaudeProvider(AIProvider):

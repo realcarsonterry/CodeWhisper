@@ -1,4 +1,4 @@
-"""Interactive interface for No Chat Bot system.
+"""Interactive interface for CodeWhisper system.
 
 This module provides the main interactive interface that manages the user experience,
 switching between No Chat mode (question-based navigation) and Chat mode (free conversation).
@@ -9,14 +9,14 @@ import uuid
 from typing import Optional, Dict, Any
 import click
 
-from nochatbot.interaction.context import ConversationContext
-from nochatbot.interaction.chatbot import IntelligentChatBot
-from nochatbot.recommendation.question_generator import QuestionGenerator
-from nochatbot.providers.base import AIProvider
+from codewhisper.interaction.context import ConversationContext
+from codewhisper.interaction.chatbot import IntelligentChatBot
+from codewhisper.recommendation.question_generator import QuestionGenerator
+from codewhisper.providers.base import AIProvider
 
 
 class InteractiveInterface:
-    """Main interactive interface for No Chat Bot.
+    """Main interactive interface for CodeWhisper.
 
     This class manages the user interaction flow, providing:
     - No Chat mode: Question-based navigation with 8 options + mode switch
@@ -285,7 +285,7 @@ class InteractiveInterface:
         click.echo(click.style("║" + " " * 68 + "║", fg="cyan", bold=True))
         click.echo(
             click.style("║", fg="cyan", bold=True) +
-            click.style("  Welcome to No Chat Bot - Intelligent Code Assistant  ", fg="yellow", bold=True) +
+            click.style("  Welcome to CodeWhisper - Intelligent Code Assistant  ", fg="yellow", bold=True) +
             click.style("║", fg="cyan", bold=True)
         )
         click.echo(click.style("║" + " " * 68 + "║", fg="cyan", bold=True))
@@ -306,7 +306,7 @@ class InteractiveInterface:
         self.running = False
         click.echo()
         click.echo(click.style("=" * 70, fg="cyan"))
-        click.echo(click.style("Thank you for using No Chat Bot!", fg="yellow", bold=True))
+        click.echo(click.style("Thank you for using CodeWhisper!", fg="yellow", bold=True))
         click.echo()
 
         # Show session summary

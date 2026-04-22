@@ -1,12 +1,12 @@
 """Intelligent Chat Bot with context awareness."""
 
 from typing import Dict, Any, Optional
-from nochatbot.interaction.context import ConversationContext
-from nochatbot.providers.base import AIProvider
+from codewhisper.interaction.context import ConversationContext
+from codewhisper.providers.base import AIProvider
 
 
 class IntelligentChatBot:
-    """Intelligent Chat Bot that inherits context from No Chat Bot.
+    """Intelligent Chat Bot that inherits context from CodeWhisper.
 
     This class provides AI-powered chat functionality with full awareness of
     the user's selection history and previous conversations. It uses the context
@@ -129,7 +129,7 @@ class IntelligentChatBot:
 
         # Role and purpose
         prompt_parts.append(
-            "You are an intelligent assistant for the No Chat Bot system. "
+            "You are an intelligent assistant for the CodeWhisper system. "
             "Your role is to help users based on their selection history and provide precise, contextual assistance."
         )
 

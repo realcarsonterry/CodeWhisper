@@ -1,4 +1,4 @@
-"""Setup script for No Chat Bot."""
+"""Setup script for CodeWhisper."""
 
 from setuptools import setup, find_packages
 
@@ -6,15 +6,15 @@ with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="nochatbot",
+    name="codewhisper",
     version="0.1.0",
-    description="AI-powered codebase analysis and recommendation tool",
+    description="Zero-barrier AI assistant for intelligent codebase understanding",
     author="Terry",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'nochatbot=nochatbot.cli:cli',
+            'codewhisper=codewhisper.cli:cli',
         ],
     },
     python_requires=">=3.8",

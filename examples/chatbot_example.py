@@ -8,8 +8,8 @@ This example demonstrates how to:
 """
 
 import asyncio
-from nochatbot.interaction import ConversationContext, IntelligentChatBot
-from nochatbot.providers.base import AIProvider
+from codewhisper.interaction import ConversationContext, IntelligentChatBot
+from codewhisper.providers.base import AIProvider
 
 
 # Example mock AI provider for demonstration

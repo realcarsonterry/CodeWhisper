@@ -25,7 +25,7 @@
 - **状态**: 通过（修复后）
 - **问题**: Windows 编码问题导致 Unicode 字符（✓ 和 ✗）无法显示
 - **修复**: 在 cli.py 中添加 Windows 编码处理代码
-- **结果**: 成功创建配置文件 ~/.nochatbot/config.json
+- **结果**: 成功创建配置文件 ~/.codewhisper/config.json
 
 #### 2.3 nochatbot status
 - **状态**: 通过
@@ -42,7 +42,7 @@
 
 ### 3. 配置文件测试
 - **状态**: 通过
-- **测试内容**: 检查 ~/.nochatbot/config.json 文件结构
+- **测试内容**: 检查 ~/.codewhisper/config.json 文件结构
 - **结果**: 配置文件格式正确，包含所有必需字段
 
 ### 4. 文件发现功能测试

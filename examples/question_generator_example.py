@@ -4,8 +4,8 @@ This example demonstrates how to use the QuestionGenerator class
 to generate intelligent questions based on different contexts.
 """
 
-from nochatbot.recommendation import QuestionGenerator
-from nochatbot.providers.base import AIProvider
+from codewhisper.recommendation import QuestionGenerator
+from codewhisper.providers.base import AIProvider
 
 
 # Mock AI Provider for demonstration

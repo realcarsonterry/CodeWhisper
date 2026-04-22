@@ -15,9 +15,9 @@ if sys.platform == 'win32':
 # Add nochatbot to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from nochatbot.providers.glm import GLMProvider
-from nochatbot.interaction.context import ConversationContext
-from nochatbot.interaction.chatbot import IntelligentChatBot
+from codewhisper.providers.glm import GLMProvider
+from codewhisper.interaction.context import ConversationContext
+from codewhisper.interaction.chatbot import IntelligentChatBot
 
 async def test_glm_provider():
     """Test GLM provider"""
