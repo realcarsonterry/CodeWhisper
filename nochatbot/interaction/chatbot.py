@@ -26,12 +26,26 @@ class IntelligentChatBot:
         self.project_info = project_info or {}
         self.knowledge_base_summary: Optional[str] = None
 
-    async def chat(self, user_message: str, stream: bool = False) -> str:
+    async def chat(self, user_message: str, stream: bool = False):
         """Process a user message and generate a response.
 
         Args:
             user_message: The user's message
             stream: Whether to stream the response (default: False)
+
+        Returns:
+            The AI's response text if stream=False, or an async generator if stream=True
+        """
+        if stream:
+            return self._chat_stream(user_message)
+        else:
+            return await self._chat_normal(user_message)
+
+    async def _chat_normal(self, user_message: str) -> str:
+        """Process a user message and return the complete response.
+
+        Args:
+            user_message: The user's message
 
         Returns:
             The AI's response text
@@ -50,32 +64,53 @@ class IntelligentChatBot:
         messages = self._build_messages(user_message)
 
         # Get response from AI provider
-        if stream:
-            response_text = ""
-            async for chunk in self.ai_provider.stream_response(
-                message=messages,
-                system_prompt=system_prompt,
-                temperature=0.7,
-                max_tokens=2048
-            ):
-                response_text += chunk
-                yield chunk
+        response = await self.ai_provider.send_message(
+            message=messages,
+            system_prompt=system_prompt,
+            temperature=0.7,
+            max_tokens=2048
+        )
 
-            # Add assistant response to chat history
-            self.context.add_chat_message("assistant", response_text)
-            return
-        else:
-            response = await self.ai_provider.send_message(
-                message=messages,
-                system_prompt=system_prompt,
-                temperature=0.7,
-                max_tokens=2048
-            )
+        # Add assistant response to chat history
+        self.context.add_chat_message("assistant", response)
 
-            # Add assistant response to chat history
-            self.context.add_chat_message("assistant", response)
+        return response
 
-            return response
+    async def _chat_stream(self, user_message: str):
+        """Process a user message and stream the response.
+
+        Args:
+            user_message: The user's message
+
+        Yields:
+            Response chunks
+        """
+        # Switch to chat mode if not already
+        if self.context.mode != "chat":
+            self.context.switch_to_chat("User initiated chat")
+
+        # Add user message to chat history
+        self.context.add_chat_message("user", user_message)
+
+        # Build system prompt with full context
+        system_prompt = self._build_system_prompt()
+
+        # Build message history
+        messages = self._build_messages(user_message)
+
+        # Stream response from AI provider
+        response_text = ""
+        async for chunk in self.ai_provider.stream_response(
+            message=messages,
+            system_prompt=system_prompt,
+            temperature=0.7,
+            max_tokens=2048
+        ):
+            response_text += chunk
+            yield chunk
+
+        # Add assistant response to chat history
+        self.context.add_chat_message("assistant", response_text)
 
     def _build_system_prompt(self) -> str:
         """Build the system prompt with complete context.

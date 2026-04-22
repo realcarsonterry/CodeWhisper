@@ -1,10 +1,10 @@
 """AI Provider layer for No Chat Bot.
 
 This module provides a unified interface for interacting with different AI providers
-including Claude (Anthropic), OpenAI, and DeepSeek.
+including Claude (Anthropic), OpenAI, DeepSeek, and GLM (Zhipu AI).
 
 Example usage:
-    from nochatbot.providers import ClaudeProvider, OpenAIProvider, DeepSeekProvider
+    from nochatbot.providers import ClaudeProvider, OpenAIProvider, DeepSeekProvider, GLMProvider
 
     # Initialize a provider
     provider = ClaudeProvider(api_key="your-api-key", model="claude-opus-4-20250514")
@@ -24,10 +24,12 @@ from nochatbot.providers.base import AIProvider
 from nochatbot.providers.claude import ClaudeProvider
 from nochatbot.providers.openai import OpenAIProvider
 from nochatbot.providers.deepseek import DeepSeekProvider
+from nochatbot.providers.glm import GLMProvider
 
 __all__ = [
     'AIProvider',
     'ClaudeProvider',
     'OpenAIProvider',
     'DeepSeekProvider',
+    'GLMProvider',
 ]

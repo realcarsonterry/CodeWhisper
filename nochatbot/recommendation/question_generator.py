@@ -490,9 +490,9 @@ class QuestionGenerator:
         ]
 
         # Add generic options until we have 8
-        while len(options) < 8:
-            idx = len(options)
-            options.append(generic_options[idx])
+        needed = 8 - len(options)
+        for i in range(needed):
+            options.append(generic_options[i])
 
         return QuestionResult(
             question=result.question,
