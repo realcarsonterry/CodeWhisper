@@ -464,11 +464,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
-
-- Built with [Claude Code](https://claude.ai/code)
-- Inspired by the need for zero-barrier AI assistance
-- Thanks to all AI providers for their APIs
 
 ---
 
