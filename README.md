@@ -462,10 +462,6 @@ See existing providers for examples.
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
----
-
-
----
 
 ## 📞 Support
 
