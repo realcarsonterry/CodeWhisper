@@ -351,15 +351,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
-## 👨‍💻 Author
 
-**This project is independently developed by [Terry Carson YM](https://github.com/realcarsonterry).**
-
-CodeWhisper is not an AI-generated project. It's a real tool built by a human developer to solve genuine problems in code comprehension and exploration.
-
-While AI-assisted development tools were used during implementation, all architectural decisions, design philosophy, and feature planning originate from human creativity and engineering judgment.
-
----
 
 ## 📄 License
 
