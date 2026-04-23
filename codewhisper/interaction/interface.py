@@ -102,51 +102,50 @@ class InteractiveInterface:
         click.echo()
 
         # Generate questions based on current context
-        try:
-            context_data = self._build_question_context()
-            result = await self.question_generator.generate_questions(context_data)
-        except Exception as e:
-            click.echo(click.style(f"Failed to generate questions: {e}", fg="red"))
+        context_data = self._build_question_context()
+        result = None
+        last_error = None
 
-            # Check if we have alternative providers
-            if hasattr(self, 'all_providers') and len(self.all_providers) > 1:
-                click.echo(click.style("\n检测到您配置了多个 API 提供商。", fg="yellow"))
-                click.echo("当前使用的 API 可能余额不足或不可用。\n")
+        # Try all available providers automatically
+        providers_to_try = [self.ai_provider]
+        if hasattr(self, 'all_providers') and len(self.all_providers) > 1:
+            # Add other providers (excluding current one)
+            providers_to_try.extend([p for p in self.all_providers if p != self.ai_provider])
 
-                # Show available providers
-                click.echo(click.style("可用的 API 提供商:", fg="cyan"))
-                for i, provider in enumerate(self.all_providers, 1):
+        for i, provider in enumerate(providers_to_try):
+            try:
+                if i > 0:  # Not the first provider
                     provider_name = provider.__class__.__name__.replace('Provider', '')
-                    click.echo(f"  [{i}] {provider_name} - {provider.model}")
+                    click.echo(click.style(f"\n⚠ 当前 API 失败，自动切换到 {provider_name}...", fg="yellow"))
+                    self.ai_provider = provider
+                    self.question_generator.ai_provider = provider
+                    self.chatbot.ai_provider = provider
 
-                click.echo()
-                if click.confirm("是否尝试切换到其他 API 提供商?", default=True):
-                    choice = click.prompt("请选择提供商编号", type=int, default=1)
-                    if 1 <= choice <= len(self.all_providers):
-                        self.ai_provider = self.all_providers[choice - 1]
-                        self.question_generator.ai_provider = self.ai_provider
-                        self.chatbot.ai_provider = self.ai_provider
+                result = await self.question_generator.generate_questions(context_data)
 
-                        provider_name = self.ai_provider.__class__.__name__.replace('Provider', '')
-                        click.echo(click.style(f"\n✓ 已切换到 {provider_name}", fg="green"))
-                        click.echo("正在重新生成问题...\n")
+                if i > 0:  # Successfully switched
+                    click.echo(click.style(f"✓ 已成功切换到 {provider_name}\n", fg="green"))
+                break  # Success, exit loop
 
-                        # Retry with new provider
-                        try:
-                            result = await self.question_generator.generate_questions(context_data)
-                        except Exception as retry_error:
-                            click.echo(click.style(f"切换后仍然失败: {retry_error}", fg="red"))
-                            click.echo("请检查 API 配置或稍后重试。")
-                            self._handle_exit()
-                            return
-                    else:
-                        click.echo(click.style("无效的选择", fg="red"))
-                        self._handle_exit()
-                        return
-                else:
-                    click.echo("请检查 API 配置或稍后重试。")
-                    self._handle_exit()
-                    return
+            except Exception as e:
+                last_error = e
+                if i == 0:  # First provider failed
+                    provider_name = provider.__class__.__name__.replace('Provider', '')
+                    click.echo(click.style(f"⚠ {provider_name} 失败: {e}", fg="yellow"))
+                continue  # Try next provider
+
+        # All providers failed
+        if result is None:
+            click.echo(click.style(f"\n✗ 所有 API 提供商均失败", fg="red"))
+            click.echo(click.style(f"最后错误: {last_error}", fg="red"))
+            click.echo("\n可能的原因:")
+            click.echo("  1. API 余额不足")
+            click.echo("  2. API 密钥无效")
+            click.echo("  3. 网络连接问题")
+            click.echo("  4. API 服务暂时不可用")
+            click.echo("\n请检查配置后重试。")
+            self._handle_exit()
+            return
             else:
                 click.echo("请检查 API 配置或稍后重试。")
                 self._handle_exit()

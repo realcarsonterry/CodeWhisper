@@ -391,20 +391,50 @@ class QuestionGenerator:
             # Try to find JSON in response
             response = response.strip()
 
+            # Log the raw response for debugging
+            logger.debug(f"Raw response length: {len(response)}")
+            logger.debug(f"Raw response preview: {response[:500]}")
+
+            if not response:
+                raise ValueError("Empty response from AI provider")
+
             # Remove markdown code blocks if present
             if response.startswith('```'):
                 lines = response.split('\n')
-                response = '\n'.join(lines[1:-1])
+                # Remove first line (```json or ```) and last line (```)
+                if len(lines) > 2:
+                    response = '\n'.join(lines[1:-1])
+                else:
+                    raise ValueError("Invalid markdown code block format")
+
+            # Try to extract JSON if there's extra text
+            # Look for { ... } pattern
+            import re
+            json_match = re.search(r'\{[\s\S]*\}', response)
+            if json_match:
+                response = json_match.group(0)
+            else:
+                raise ValueError("No JSON object found in response")
 
             # Parse JSON
             data = json.loads(response)
 
             # Validate structure
             if 'question' not in data or 'options' not in data:
-                raise ValueError("Response missing required fields")
+                raise ValueError("Response missing required fields: 'question' or 'options'")
 
             if not isinstance(data['options'], list):
                 raise ValueError("Options must be a list")
+
+            if len(data['options']) == 0:
+                raise ValueError("Options list is empty")
+
+            # Validate each option has required fields
+            for i, opt in enumerate(data['options']):
+                if not isinstance(opt, dict):
+                    raise ValueError(f"Option {i} is not a dictionary")
+                if 'id' not in opt or 'text' not in opt or 'description' not in opt:
+                    raise ValueError(f"Option {i} missing required fields")
 
             # Convert to QuestionResult
             return QuestionResult(
@@ -414,10 +444,11 @@ class QuestionGenerator:
 
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse JSON response: {e}")
-            logger.debug(f"Response was: {response}")
+            logger.error(f"Response was: {response[:1000]}")
             raise ValueError(f"Invalid JSON response: {e}")
         except Exception as e:
             logger.error(f"Failed to parse response: {e}")
+            logger.error(f"Response preview: {response[:500] if response else 'EMPTY'}")
             raise ValueError(f"Failed to parse response: {e}")
 
     def _ensure_8_options(self, result: QuestionResult) -> QuestionResult:
