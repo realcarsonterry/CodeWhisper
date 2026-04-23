@@ -89,8 +89,8 @@ def add_provider(name: str, api_key: str, model: Optional[str]):
 @click.argument('path', type=click.Path(exists=True, file_okay=False, dir_okay=True))
 @click.option('--provider', '-p',
               help='Specific provider to use (default: use all configured providers)')
-@click.option('--max-agents', '-a', default=10,
-              help='Maximum number of parallel agents (default: 10)')
+@click.option('--max-agents', '-a', default=1000,
+              help='Maximum number of parallel agents (default: 1000, one per file for maximum speed)')
 @click.option('--no-interactive', is_flag=True,
               help='Skip interactive interface after scanning')
 def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bool):
@@ -99,14 +99,14 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
     This command will:
       1. Check permissions (first-time authorization required)
       2. Load configured AI providers
-      3. Scan the directory using parallel agents
+      3. Scan the directory using parallel agents (one agent per file!)
       4. Build a knowledge graph
       5. Launch interactive chat interface (unless --no-interactive)
 
     Examples:
-        nochatbot scan /path/to/project
-        nochatbot scan . --provider anthropic
-        nochatbot scan ~/code/myapp --max-agents 20
+        codewhisper scan /path/to/project
+        codewhisper scan . --provider glm
+        codewhisper scan ~/code/myapp --max-agents 500
     """
     try:
         config = Config()
@@ -157,7 +157,11 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
 
         # Build knowledge graph
         click.echo(click.style("\nBuilding knowledge graph...", fg="cyan"))
+        import time
+        start_time = time.time()
         knowledge_graph = master.build_knowledge_graph()
+        elapsed = time.time() - start_time
+        click.echo(click.style(f"Knowledge graph built in {elapsed:.2f}s", fg="green"))
 
         # Display results
         click.echo(click.style("\n" + "="*60, fg="cyan"))
@@ -447,99 +451,48 @@ def _load_providers(config: Config, provider_name: Optional[str] = None):
 
 
 def _start_interactive_interface(master_agent, provider, scan_path: Path):
-    """Start the interactive chat interface.
+    """Start the interactive No Chat interface.
 
     Args:
         master_agent: MasterAgent instance with scan results
-        provider: AI provider to use for chat
+        provider: AI provider to use for generating questions
         scan_path: Path that was scanned
     """
-    from codewhisper.interaction.context import ConversationContext
-    from codewhisper.interaction.chatbot import IntelligentChatBot
+    from codewhisper.interaction.interface import InteractiveInterface
     import uuid
 
-    # Create conversation context with unique session ID
-    session_id = str(uuid.uuid4())
-    context = ConversationContext(session_id=session_id)
-
-    # Add project info to knowledge base
+    # Get scan results
     results = master_agent.get_results()
     knowledge_graph = master_agent.get_knowledge_graph()
 
-    context.knowledge_base['project_path'] = str(scan_path)
-    context.knowledge_base['total_files'] = len(results)
-    context.knowledge_base['analyzed_files'] = sum(1 for r in results.values() if r.get('status') == 'success')
-
-    # Create chatbot
+    # Prepare project info
     project_info = {
-        'path': str(scan_path),
+        'project_name': scan_path.name,
+        'project_path': str(scan_path),
         'files_scanned': len(results),
-        'knowledge_nodes': knowledge_graph['metadata']['total_nodes']
+        'files_analyzed': sum(1 for r in results.values() if r.get('status') == 'success'),
+        'knowledge_nodes': knowledge_graph['metadata']['total_nodes'],
+        'knowledge_edges': knowledge_graph['metadata']['total_edges'],
+        'scan_results': results,
+        'knowledge_graph': knowledge_graph
     }
 
-    chatbot = IntelligentChatBot(
-        context=context,
+    # Create and start interactive interface
+    click.echo("\n" + "="*60)
+    click.echo(click.style("🎉 Scan Complete! No Chat Mode Ready", fg="green", bold=True))
+    click.echo("="*60)
+    click.echo("\nCodeWhisper will now present you with 8 intelligent questions.")
+    click.echo("Simply choose a number (1-8) or 9 to switch to Chat mode.\n")
+
+    session_id = str(uuid.uuid4())
+    interface = InteractiveInterface(
         ai_provider=provider,
-        project_info=project_info
+        project_info=project_info,
+        session_id=session_id
     )
 
-    # Interactive loop
-    click.echo("Chat with your codebase! Ask questions about the scanned project.\n")
-
-    while True:
-        try:
-            user_input = click.prompt(click.style("You", fg="green"), type=str)
-
-            if not user_input.strip():
-                continue
-
-            # Handle special commands
-            if user_input.lower() in ['exit', 'quit', 'q']:
-                click.echo(click.style("\nGoodbye!", fg="cyan"))
-                break
-
-            if user_input.lower() == 'help':
-                _show_help()
-                continue
-
-            if user_input.lower() == 'clear':
-                chatbot.clear_chat_history()
-                click.echo(click.style("Chat history cleared.", fg="yellow"))
-                continue
-
-            if user_input.lower() == 'context':
-                summary = chatbot.get_context_summary()
-                click.echo(click.style("\nContext Summary:", fg="cyan"))
-                for key, value in summary.items():
-                    click.echo(f"  {key}: {value}")
-                continue
-
-            # Get AI response
-            click.echo(click.style("\nAssistant: ", fg="blue"), nl=False)
-
-            import asyncio
-            response = asyncio.run(chatbot.chat(user_input, stream=False))
-            click.echo(response)
-            click.echo()
-
-        except KeyboardInterrupt:
-            click.echo(click.style("\n\nGoodbye!", fg="cyan"))
-            break
-        except EOFError:
-            click.echo(click.style("\n\nGoodbye!", fg="cyan"))
-            break
-        except Exception as e:
-            click.echo(click.style(f"\n✗ Error: {e}", fg="red"))
-
-
-def _show_help():
-    """Show help for interactive interface."""
-    click.echo(click.style("\nAvailable Commands:", fg="cyan", bold=True))
-    click.echo("  help     - Show this help message")
-    click.echo("  clear    - Clear chat history")
-    click.echo("  context  - Show current context summary")
-    click.echo("  exit     - Exit the interactive interface")
-    click.echo("\nJust type your question to chat with the AI about your codebase.\n")
+    # Start the No Chat interface
+    interface.start()
 
 
 if __name__ == '__main__':

@@ -48,14 +48,14 @@ class MasterAgent:
     def scan_directory(
         self,
         path: str,
-        max_agents: int = 10,
+        max_agents: int = 1000,
         show_progress: bool = True
     ) -> Dict[str, Any]:
         """Scan a directory and analyze all files using parallel sub-agents.
 
         Args:
             path: Root directory path to scan
-            max_agents: Maximum number of parallel sub-agents to use
+            max_agents: Maximum number of parallel sub-agents to use (default: 1000)
             show_progress: Whether to display progress information
 
         Returns:
@@ -67,7 +67,7 @@ class MasterAgent:
         """
         if show_progress:
             print(f"Starting directory scan: {path}")
-            print(f"Using {len(self.providers)} AI provider(s) with up to {max_agents} parallel agents")
+            print(f"Using {len(self.providers)} AI provider(s)")
 
         # Discover files
         try:
@@ -92,11 +92,18 @@ class MasterAgent:
         for file_path in files:
             task_queue.add_task(file_path)
 
-        # Determine actual number of agents to use
+        # IMPORTANT: Create one agent per file for maximum parallelism!
+        # This is the core of "No Chat Bot" - hundreds/thousands of agents working simultaneously
         num_agents = min(max_agents, len(files))
 
-        if show_progress:
-            print(f"Starting {num_agents} sub-agents...")
+        # If user wants more agents than files, use one agent per file
+        if num_agents >= len(files):
+            num_agents = len(files)
+            if show_progress:
+                print(f"Creating {num_agents} sub-agents (one per file) for maximum speed...")
+        else:
+            if show_progress:
+                print(f"Creating {num_agents} sub-agents (limited by max_agents parameter)...")
 
         # Create sub-agents with round-robin provider assignment
         sub_agents = []
@@ -111,6 +118,7 @@ class MasterAgent:
             sub_agents.append(agent)
 
         # Run sub-agents in parallel using ThreadPoolExecutor
+        # Use a large thread pool to handle hundreds/thousands of concurrent agents
         with ThreadPoolExecutor(max_workers=num_agents) as executor:
             # Submit all agents
             futures = [executor.submit(agent.run) for agent in sub_agents]
@@ -121,7 +129,7 @@ class MasterAgent:
                     while not task_queue.is_empty() or any(not f.done() for f in futures):
                         completed, total = task_queue.get_progress()
                         progress_pct = (completed / total * 100) if total > 0 else 0
-                        print(f"\rProgress: {completed}/{total} files ({progress_pct:.1f}%)", end='', flush=True)
+                        print(f"\rProgress: {completed}/{total} files ({progress_pct:.1f}%) | {num_agents} agents working", end='', flush=True)
 
                         # Check if all futures are done
                         if all(f.done() for f in futures):
@@ -129,7 +137,7 @@ class MasterAgent:
 
                         # Small delay to avoid busy waiting
                         import time
-                        time.sleep(0.5)
+                        time.sleep(0.1)  # Reduced from 0.5s for faster updates
 
                     print()  # New line after progress
                 except KeyboardInterrupt:
@@ -156,6 +164,7 @@ class MasterAgent:
             print(f"  Total files: {total_files}")
             print(f"  Successfully analyzed: {successful}")
             print(f"  Errors: {errors}")
+            print(f"  Agents used: {num_agents}")
 
         return {
             "status": "completed",
@@ -199,6 +208,7 @@ class MasterAgent:
                 nodes.append(node)
 
         # Simple edge creation based on directory structure
+        # Limit edges to avoid performance issues with large directories
         file_by_dir: Dict[str, List[str]] = {}
         for file_path in self.results.keys():
             dir_path = str(Path(file_path).parent)
@@ -207,10 +217,20 @@ class MasterAgent:
             file_by_dir[dir_path].append(file_path)
 
         # Create edges between files in the same directory
+        # Limit to max 10 edges per file to avoid O(n²) explosion
         edge_id = 0
+        MAX_EDGES_PER_FILE = 10
+
         for dir_path, files in file_by_dir.items():
+            # Skip edge creation for very large directories
+            if len(files) > 100:
+                continue
+
             for i, file1 in enumerate(files):
+                edges_created = 0
                 for file2 in files[i+1:]:
+                    if edges_created >= MAX_EDGES_PER_FILE:
+                        break
                     edges.append({
                         "id": edge_id,
                         "source": file1,
@@ -219,6 +239,7 @@ class MasterAgent:
                         "weight": 1.0
                     })
                     edge_id += 1
+                    edges_created += 1
 
         self.knowledge_graph = {
             "nodes": nodes,

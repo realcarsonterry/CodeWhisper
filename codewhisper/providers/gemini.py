@@ -1,6 +1,13 @@
 """Google Gemini provider implementation."""
 
 from typing import Dict, Any, AsyncIterator, Optional
+import warnings
+import os
+
+# Suppress the deprecation warning before importing
+os.environ['PYTHONWARNINGS'] = 'ignore::FutureWarning'
+warnings.filterwarnings('ignore', category=FutureWarning)
+
 import google.generativeai as genai
 from codewhisper.providers.base import AIProvider
 
