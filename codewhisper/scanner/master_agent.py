@@ -134,18 +134,18 @@ class MasterAgent:
             # Monitor progress
             if show_progress:
                 try:
-                    while not task_queue.is_empty() or any(not f.done() for f in futures):
+                    import time
+                    while True:
                         completed, total = task_queue.get_progress()
                         progress_pct = (completed / total * 100) if total > 0 else 0
                         print(f"\rProgress: {completed}/{total} files ({progress_pct:.1f}%) | {num_agents} agents working", end='', flush=True)
 
-                        # Check if all futures are done
+                        # Exit when all futures are done (this is the reliable signal)
                         if all(f.done() for f in futures):
                             break
 
                         # Small delay to avoid busy waiting
-                        import time
-                        time.sleep(0.1)  # Reduced from 0.5s for faster updates
+                        time.sleep(0.1)
 
                     print()  # New line after progress
                 except KeyboardInterrupt:
