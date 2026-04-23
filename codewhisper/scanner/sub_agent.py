@@ -128,38 +128,44 @@ class SubAgent:
         except Exception as e:
             raise OSError(f"Failed to read file {file_path}: {e}")
 
-        # Prepare analysis prompt
+        # Prepare analysis prompt - SIMPLIFIED for speed
         file_name = Path(file_path).name
         file_ext = Path(file_path).suffix
 
-        system_prompt = """You are a code analysis expert. Analyze the provided code file and extract:
-1. Purpose and functionality
-2. Key components (classes, functions, modules)
-3. Dependencies and imports
-4. Main algorithms or patterns used
-5. Potential issues or improvements
+        # Use a much shorter, faster prompt
+        system_prompt = "You are a code analyzer. Provide a brief 2-3 sentence summary."
 
-Provide a concise but comprehensive analysis."""
-
-        user_message = f"""Analyze this {file_ext} file: {file_name}
+        user_message = f"""File: {file_name}
 
 ```
-{content[:8000]}  # Limit content to avoid token limits
+{content[:3000]}
 ```
 
-Provide a structured analysis of this code."""
+Summarize in 2-3 sentences: What does this file do?"""
 
-        # Call AI provider
-        try:
-            analysis = await self.provider.send_message(
-                message=user_message,
-                system_prompt=system_prompt,
-                temperature=0.3,
-                max_tokens=2048
-            )
-            return analysis
-        except Exception as e:
-            raise Exception(f"AI provider analysis failed: {e}")
+        # Call AI provider with retry logic for rate limits
+        max_retries = 3
+        retry_delay = 1.0
+
+        for attempt in range(max_retries):
+            try:
+                analysis = await self.provider.send_message(
+                    message=user_message,
+                    system_prompt=system_prompt,
+                    temperature=0.1,  # Lower for faster, more deterministic responses
+                    max_tokens=200    # Much smaller for speed
+                )
+                return analysis
+            except Exception as e:
+                error_msg = str(e).lower()
+                # Check if it's a rate limit error
+                if 'rate' in error_msg or 'limit' in error_msg or '429' in error_msg:
+                    if attempt < max_retries - 1:
+                        # Exponential backoff
+                        wait_time = retry_delay * (2 ** attempt)
+                        await asyncio.sleep(wait_time)
+                        continue
+                raise Exception(f"AI provider analysis failed: {e}")
 
     def stop(self) -> None:
         """Stop the agent gracefully."""

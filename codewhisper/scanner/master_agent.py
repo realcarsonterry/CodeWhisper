@@ -94,6 +94,7 @@ class MasterAgent:
 
         # IMPORTANT: Create one agent per file for maximum parallelism!
         # This is the core of "No Chat Bot" - hundreds/thousands of agents working simultaneously
+        # However, limit concurrent API calls to avoid rate limits
         num_agents = min(max_agents, len(files))
 
         # If user wants more agents than files, use one agent per file
@@ -104,6 +105,13 @@ class MasterAgent:
         else:
             if show_progress:
                 print(f"Creating {num_agents} sub-agents (limited by max_agents parameter)...")
+
+        # Limit concurrent workers to avoid API rate limits
+        # Even with 1000 agents, only 20 will call API simultaneously
+        concurrent_workers = min(num_agents, 20)
+
+        if show_progress:
+            print(f"Using {concurrent_workers} concurrent API workers to respect rate limits...")
 
         # Create sub-agents with round-robin provider assignment
         sub_agents = []
@@ -119,7 +127,7 @@ class MasterAgent:
 
         # Run sub-agents in parallel using ThreadPoolExecutor
         # Use a large thread pool to handle hundreds/thousands of concurrent agents
-        with ThreadPoolExecutor(max_workers=num_agents) as executor:
+        with ThreadPoolExecutor(max_workers=concurrent_workers) as executor:
             # Submit all agents
             futures = [executor.submit(agent.run) for agent in sub_agents]
 
