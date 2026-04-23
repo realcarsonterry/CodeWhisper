@@ -132,6 +132,54 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
 
         click.echo(click.style(f"\n✓ Loaded {len(providers)} provider(s)", fg="green"))
 
+        # Check provider health
+        click.echo(click.style("\n检查 API 健康状态...", fg="cyan"))
+        healthy_providers = []
+        unhealthy_providers = []
+
+        import asyncio
+        async def check_provider_health(prov):
+            try:
+                # Simple test call
+                await prov.send_message(
+                    message="test",
+                    system_prompt="Reply with 'ok'",
+                    temperature=0,
+                    max_tokens=10
+                )
+                return True
+            except Exception as e:
+                return False
+
+        async def check_all_providers():
+            tasks = [check_provider_health(p) for p in providers]
+            return await asyncio.gather(*tasks)
+
+        health_results = asyncio.run(check_all_providers())
+
+        for i, (prov, is_healthy) in enumerate(zip(providers, health_results)):
+            provider_name = prov.__class__.__name__.replace('Provider', '')
+            if is_healthy:
+                healthy_providers.append(prov)
+                click.echo(f"  ✓ {provider_name} ({prov.model}) - " + click.style("可用", fg="green"))
+            else:
+                unhealthy_providers.append(prov)
+                click.echo(f"  ✗ {provider_name} ({prov.model}) - " + click.style("不可用 (余额不足或网络问题)", fg="red"))
+
+        if not healthy_providers:
+            click.echo(click.style("\n✗ 所有配置的 API 都不可用", fg="red"))
+            click.echo("请检查:")
+            click.echo("  1. API 密钥是否正确")
+            click.echo("  2. 账户余额是否充足")
+            click.echo("  3. 网络连接是否正常")
+            sys.exit(1)
+
+        if unhealthy_providers:
+            click.echo(click.style(f"\n⚠ {len(unhealthy_providers)} 个 API 不可用，将使用 {len(healthy_providers)} 个可用的 API", fg="yellow"))
+
+        # Use only healthy providers
+        providers = healthy_providers
+
         # Import here to avoid circular dependencies
         from codewhisper.scanner.master_agent import MasterAgent
 
@@ -183,7 +231,7 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
             click.echo(click.style("="*60, fg="cyan"))
             click.echo("\nType 'help' for available commands, 'exit' to quit\n")
 
-            _start_interactive_interface(master, providers[0], scan_path)
+            _start_interactive_interface(master, providers, scan_path)
         else:
             click.echo(click.style("\n✓ Scan completed successfully!", fg="green"))
 
@@ -450,12 +498,12 @@ def _load_providers(config: Config, provider_name: Optional[str] = None):
     return providers
 
 
-def _start_interactive_interface(master_agent, provider, scan_path: Path):
+def _start_interactive_interface(master_agent, providers, scan_path: Path):
     """Start the interactive No Chat interface.
 
     Args:
         master_agent: MasterAgent instance with scan results
-        provider: AI provider to use for generating questions
+        providers: List of AI providers (all healthy providers)
         scan_path: Path that was scanned
     """
     from codewhisper.interaction.interface import InteractiveInterface
@@ -486,10 +534,13 @@ def _start_interactive_interface(master_agent, provider, scan_path: Path):
 
     session_id = str(uuid.uuid4())
     interface = InteractiveInterface(
-        ai_provider=provider,
+        ai_provider=providers[0],  # Use first healthy provider
         project_info=project_info,
         session_id=session_id
     )
+
+    # Pass all providers for fallback
+    interface.all_providers = providers
 
     # Start the No Chat interface
     interface.start()

@@ -107,8 +107,50 @@ class InteractiveInterface:
             result = await self.question_generator.generate_questions(context_data)
         except Exception as e:
             click.echo(click.style(f"Failed to generate questions: {e}", fg="red"))
-            click.echo("Using default options...\n")
-            result = self.question_generator._get_default_options()
+
+            # Check if we have alternative providers
+            if hasattr(self, 'all_providers') and len(self.all_providers) > 1:
+                click.echo(click.style("\n检测到您配置了多个 API 提供商。", fg="yellow"))
+                click.echo("当前使用的 API 可能余额不足或不可用。\n")
+
+                # Show available providers
+                click.echo(click.style("可用的 API 提供商:", fg="cyan"))
+                for i, provider in enumerate(self.all_providers, 1):
+                    provider_name = provider.__class__.__name__.replace('Provider', '')
+                    click.echo(f"  [{i}] {provider_name} - {provider.model}")
+
+                click.echo()
+                if click.confirm("是否尝试切换到其他 API 提供商?", default=True):
+                    choice = click.prompt("请选择提供商编号", type=int, default=1)
+                    if 1 <= choice <= len(self.all_providers):
+                        self.ai_provider = self.all_providers[choice - 1]
+                        self.question_generator.ai_provider = self.ai_provider
+                        self.chatbot.ai_provider = self.ai_provider
+
+                        provider_name = self.ai_provider.__class__.__name__.replace('Provider', '')
+                        click.echo(click.style(f"\n✓ 已切换到 {provider_name}", fg="green"))
+                        click.echo("正在重新生成问题...\n")
+
+                        # Retry with new provider
+                        try:
+                            result = await self.question_generator.generate_questions(context_data)
+                        except Exception as retry_error:
+                            click.echo(click.style(f"切换后仍然失败: {retry_error}", fg="red"))
+                            click.echo("请检查 API 配置或稍后重试。")
+                            self._handle_exit()
+                            return
+                    else:
+                        click.echo(click.style("无效的选择", fg="red"))
+                        self._handle_exit()
+                        return
+                else:
+                    click.echo("请检查 API 配置或稍后重试。")
+                    self._handle_exit()
+                    return
+            else:
+                click.echo("请检查 API 配置或稍后重试。")
+                self._handle_exit()
+                return
 
         # Display question
         click.echo(click.style(result.question, fg="yellow", bold=True))

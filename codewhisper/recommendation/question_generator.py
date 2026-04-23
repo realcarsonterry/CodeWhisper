@@ -95,8 +95,8 @@ class QuestionGenerator:
             raise
         except Exception as e:
             logger.error(f"Failed to generate questions: {e}")
-            # Return default options as fallback
-            return self._get_default_options()
+            # DO NOT return default options - raise the error so caller can handle it
+            raise RuntimeError(f"Question generation failed: {e}") from e
 
     def _build_prompt(self, context: Dict[str, Any]) -> str:
         """Build prompt based on context type.
