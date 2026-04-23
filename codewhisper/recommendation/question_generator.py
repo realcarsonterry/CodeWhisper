@@ -132,25 +132,25 @@ class QuestionGenerator:
         # Summarize scan results
         project_summary = self._summarize_scan_results(scan_results)
 
-        prompt = f"""基于以下项目扫描结果，生成一个引导性问题和8个高质量选项，帮助用户深入了解项目。
+        prompt = f"""Based on the following project scan results, generate a guiding question and 8 high-quality options to help users deeply understand the project.
 
-项目扫描结果：
+Project scan results:
 {project_summary}
 
-请生成：
-1. 一个开放性的引导问题，帮助用户选择他们想了解的方向
-2. 8个具体的选项，每个选项应该：
-   - 针对项目的不同方面（架构、功能、技术栈、代码质量等）
-   - 具有明确的探索价值
-   - 能够引导用户深入了解项目
-   - 描述清晰，让用户知道选择后会得到什么信息
+Please generate:
+1. An open-ended guiding question to help users choose their exploration direction
+2. 8 specific options, each should:
+   - Target different aspects of the project (architecture, features, tech stack, code quality, etc.)
+   - Have clear exploration value
+   - Guide users to deeply understand the project
+   - Be clearly described so users know what information they'll get
 
-请以JSON格式返回，格式如下：
+Return in JSON format:
 {{
-    "question": "你想了解这个项目的哪个方面？",
+    "question": "What aspect of this project would you like to explore?",
     "options": [
-        {{"id": "1", "text": "选项标题", "description": "选项详细描述"}},
-        ...共8个选项
+        {{"id": "1", "text": "Option title", "description": "Detailed option description"}},
+        ...8 options total
     ]
 }}"""
 
@@ -173,28 +173,28 @@ class QuestionGenerator:
         # Summarize knowledge base
         kb_summary = self._summarize_knowledge_base()
 
-        prompt = f"""基于用户之前的选择历史和已积累的项目知识，生成下一个引导性问题和8个选项。
+        prompt = f"""Based on the user's previous selection history and accumulated project knowledge, generate the next guiding question and 8 options.
 
-用户选择历史：
+User selection history:
 {history_summary}
 
-已知项目信息：
+Known project information:
 {kb_summary}
 
-请生成：
-1. 一个承接之前对话的引导问题，帮助用户继续深入探索
-2. 8个新的选项，应该：
-   - 基于用户已经了解的内容，提供更深入的探索方向
-   - 避免重复之前已经探索过的内容
-   - 提供不同维度的分析角度
-   - 保持连贯性，让对话自然流畅
+Please generate:
+1. A guiding question that continues from the previous conversation to help users explore further
+2. 8 new options that should:
+   - Provide deeper exploration directions based on what the user already knows
+   - Avoid repeating previously explored content
+   - Offer different analytical perspectives
+   - Maintain coherence for natural conversation flow
 
-请以JSON格式返回，格式如下：
+Return in JSON format:
 {{
-    "question": "基于你刚才的选择，接下来想了解什么？",
+    "question": "Based on your previous choice, what would you like to explore next?",
     "options": [
-        {{"id": "1", "text": "选项标题", "description": "选项详细描述"}},
-        ...共8个选项
+        {{"id": "1", "text": "Option title", "description": "Detailed option description"}},
+        ...8 options total
     ]
 }}"""
 
@@ -217,28 +217,28 @@ class QuestionGenerator:
         # Summarize knowledge base
         kb_summary = self._summarize_knowledge_base()
 
-        prompt = f"""用户刚从自由对话模式切换回来。基于对话内容和项目知识，生成引导性问题和8个选项。
+        prompt = f"""User just switched back from free chat mode. Based on the conversation content and project knowledge, generate a guiding question and 8 options.
 
-对话内容摘要：
+Conversation summary:
 {chat_summary}
 
-已知项目信息：
+Known project information:
 {kb_summary}
 
-请生成：
-1. 一个基于对话内容的引导问题，帮助用户继续探索相关主题
-2. 8个选项，应该：
-   - 深度理解对话中用户关注的问题和兴趣点
-   - 提供与对话主题相关的深入探索方向
-   - 结合项目实际情况，给出具体可行的分析角度
-   - 帮助用户从对话中的抽象讨论转向具体的代码分析
+Please generate:
+1. A guiding question based on the conversation content to help users continue exploring related topics
+2. 8 options that should:
+   - Deeply understand the issues and interests the user focused on in the conversation
+   - Provide in-depth exploration directions related to the conversation topic
+   - Combine with actual project conditions to give specific and feasible analysis perspectives
+   - Help users transition from abstract discussion in conversation to specific code analysis
 
-请以JSON格式返回，格式如下：
+Return in JSON format:
 {{
-    "question": "基于刚才的对话，你想深入了解哪个方面？",
+    "question": "Based on our conversation, what aspect would you like to explore in depth?",
     "options": [
-        {{"id": "1", "text": "选项标题", "description": "选项详细描述"}},
-        ...共8个选项
+        {{"id": "1", "text": "Option title", "description": "Detailed option description"}},
+        ...8 options total
     ]
 }}"""
 
@@ -254,34 +254,34 @@ class QuestionGenerator:
             Formatted summary string
         """
         if not scan_results:
-            return "暂无扫描结果"
+            return "No scan results available"
 
         summary_parts = []
 
         # File statistics
         if 'file_count' in scan_results:
-            summary_parts.append(f"文件数量: {scan_results['file_count']}")
+            summary_parts.append(f"File count: {scan_results['file_count']}")
 
         # Language distribution
         if 'languages' in scan_results:
             langs = ', '.join([f"{k}: {v}" for k, v in scan_results['languages'].items()])
-            summary_parts.append(f"编程语言: {langs}")
+            summary_parts.append(f"Programming languages: {langs}")
 
         # Project structure
         if 'structure' in scan_results:
-            summary_parts.append(f"项目结构: {scan_results['structure']}")
+            summary_parts.append(f"Project structure: {scan_results['structure']}")
 
         # Dependencies
         if 'dependencies' in scan_results:
             deps = ', '.join(scan_results['dependencies'][:10])  # First 10
-            summary_parts.append(f"主要依赖: {deps}")
+            summary_parts.append(f"Main dependencies: {deps}")
 
         # Key files
         if 'key_files' in scan_results:
             files = ', '.join(scan_results['key_files'][:10])
-            summary_parts.append(f"关键文件: {files}")
+            summary_parts.append(f"Key files: {files}")
 
-        return '\n'.join(summary_parts) if summary_parts else "项目扫描完成"
+        return '\n'.join(summary_parts) if summary_parts else "Project scan completed"
 
     def _summarize_selection_history(self, history: List[Dict[str, Any]]) -> str:
         """Summarize user's selection history.
@@ -293,14 +293,14 @@ class QuestionGenerator:
             Formatted summary string
         """
         if not history:
-            return "暂无选择历史"
+            return "No selection history available"
 
         summary_parts = []
         for i, item in enumerate(history[-5:], 1):  # Last 5 selections
-            question = item.get('question', '未知问题')
+            question = item.get('question', 'Unknown question')
             selected = item.get('selected_option', {})
-            text = selected.get('text', '未知选项')
-            summary_parts.append(f"{i}. {question}\n   选择: {text}")
+            text = selected.get('text', 'Unknown option')
+            summary_parts.append(f"{i}. {question}\n   Selected: {text}")
 
         return '\n'.join(summary_parts)
 
@@ -314,7 +314,7 @@ class QuestionGenerator:
             Formatted summary string
         """
         if not chat_content:
-            return "暂无对话内容"
+            return "No conversation content available"
 
         # Get last 10 messages
         recent_messages = chat_content[-10:]
@@ -337,7 +337,7 @@ class QuestionGenerator:
             Formatted summary string
         """
         if not self.knowledge_base:
-            return "暂无积累的项目知识"
+            return "No accumulated project knowledge available"
 
         # Take last 5 knowledge items
         recent_knowledge = self.knowledge_base[-5:]
@@ -345,8 +345,8 @@ class QuestionGenerator:
         summary_parts = []
         for i, item in enumerate(recent_knowledge, 1):
             if isinstance(item, dict):
-                topic = item.get('topic', '未知主题')
-                summary = item.get('summary', '无摘要')
+                topic = item.get('topic', 'Unknown topic')
+                summary = item.get('summary', 'No summary')
                 summary_parts.append(f"{i}. {topic}: {summary}")
             else:
                 summary_parts.append(f"{i}. {str(item)}")
@@ -359,21 +359,21 @@ class QuestionGenerator:
         Returns:
             System prompt string
         """
-        return """你是一个专业的代码分析助手，擅长帮助开发者理解和探索代码库。
+        return """You are a professional code analysis assistant, skilled at helping developers understand and explore codebases.
 
-你的任务是生成引导性问题和选项，帮助用户：
-1. 系统性地了解项目结构和功能
-2. 深入探索感兴趣的技术细节
-3. 发现代码中的关键模式和设计决策
-4. 理解项目的技术栈和架构选择
+Your task is to generate guiding questions and options to help users:
+1. Systematically understand project structure and functionality
+2. Deeply explore technical details of interest
+3. Discover key patterns and design decisions in the code
+4. Understand the project's tech stack and architectural choices
 
-生成选项时要注意：
-- 每个选项都应该有明确的探索价值
-- 选项之间应该覆盖不同的维度和层次
-- 描述要清晰具体，让用户知道会得到什么
-- 保持专业但友好的语气
+When generating options, pay attention to:
+- Each option should have clear exploration value
+- Options should cover different dimensions and levels
+- Descriptions should be clear and specific, letting users know what they'll get
+- Maintain a professional but friendly tone
 
-必须严格按照JSON格式返回结果。"""
+Must strictly return results in JSON format."""
 
     def _parse_response(self, response: str) -> QuestionResult:
         """Parse AI response into QuestionResult.
@@ -480,43 +480,43 @@ class QuestionGenerator:
         generic_options = [
             {
                 "id": str(len(options) + 1),
-                "text": "查看项目整体架构",
-                "description": "了解项目的整体结构和组织方式"
+                "text": "View overall architecture",
+                "description": "Understand the overall structure and organization of the project"
             },
             {
                 "id": str(len(options) + 2),
-                "text": "分析核心功能实现",
-                "description": "深入了解项目的核心功能是如何实现的"
+                "text": "Analyze core functionality",
+                "description": "Deep dive into how the core features are implemented"
             },
             {
                 "id": str(len(options) + 3),
-                "text": "探索技术栈选择",
-                "description": "了解项目使用的技术栈及其选择原因"
+                "text": "Explore tech stack",
+                "description": "Understand the technology stack and reasons for choices"
             },
             {
                 "id": str(len(options) + 4),
-                "text": "检查代码质量",
-                "description": "分析代码的质量、可维护性和最佳实践"
+                "text": "Check code quality",
+                "description": "Analyze code quality, maintainability and best practices"
             },
             {
                 "id": str(len(options) + 5),
-                "text": "了解依赖关系",
-                "description": "查看项目的依赖关系和模块间的耦合"
+                "text": "Understand dependencies",
+                "description": "View project dependencies and module coupling"
             },
             {
                 "id": str(len(options) + 6),
-                "text": "查看测试覆盖",
-                "description": "了解项目的测试策略和覆盖情况"
+                "text": "View test coverage",
+                "description": "Understand testing strategy and coverage"
             },
             {
                 "id": str(len(options) + 7),
-                "text": "分析性能考虑",
-                "description": "探索项目中的性能优化和考虑"
+                "text": "Analyze performance",
+                "description": "Explore performance optimizations and considerations"
             },
             {
                 "id": str(len(options) + 8),
-                "text": "其他方面",
-                "description": "探索项目的其他有趣方面"
+                "text": "Other aspects",
+                "description": "Explore other interesting aspects of the project"
             }
         ]
 
@@ -539,47 +539,47 @@ class QuestionGenerator:
         logger.info("Using default options as fallback")
 
         return QuestionResult(
-            question="你想了解这个项目的哪个方面？",
+            question="Which aspect of this project would you like to explore?",
             options=[
                 {
                     "id": "1",
-                    "text": "项目整体架构",
-                    "description": "了解项目的整体结构、模块划分和组织方式"
+                    "text": "Overall architecture",
+                    "description": "Understand the overall structure, module division and organization"
                 },
                 {
                     "id": "2",
-                    "text": "核心功能实现",
-                    "description": "深入了解项目的核心功能是如何实现的"
+                    "text": "Core functionality",
+                    "description": "Deep dive into how the core features are implemented"
                 },
                 {
                     "id": "3",
-                    "text": "技术栈分析",
-                    "description": "了解项目使用的技术栈、框架和工具"
+                    "text": "Tech stack analysis",
+                    "description": "Understand the technology stack, frameworks and tools used"
                 },
                 {
                     "id": "4",
-                    "text": "代码质量评估",
-                    "description": "分析代码的质量、可维护性和最佳实践应用"
+                    "text": "Code quality assessment",
+                    "description": "Analyze code quality, maintainability and best practices"
                 },
                 {
                     "id": "5",
-                    "text": "依赖关系图",
-                    "description": "查看项目的依赖关系和模块间的耦合情况"
+                    "text": "Dependency graph",
+                    "description": "View project dependencies and module coupling"
                 },
                 {
                     "id": "6",
-                    "text": "测试策略",
-                    "description": "了解项目的测试策略、覆盖率和测试方法"
+                    "text": "Testing strategy",
+                    "description": "Understand testing strategy, coverage and methods"
                 },
                 {
                     "id": "7",
-                    "text": "性能优化",
-                    "description": "探索项目中的性能优化策略和考虑"
+                    "text": "Performance optimization",
+                    "description": "Explore performance optimization strategies and considerations"
                 },
                 {
                     "id": "8",
-                    "text": "配置和部署",
-                    "description": "了解项目的配置管理和部署流程"
+                    "text": "Configuration and deployment",
+                    "description": "Understand configuration management and deployment process"
                 }
             ]
         )

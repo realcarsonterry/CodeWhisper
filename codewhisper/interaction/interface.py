@@ -116,7 +116,7 @@ class InteractiveInterface:
             try:
                 if i > 0:  # Not the first provider
                     provider_name = provider.__class__.__name__.replace('Provider', '')
-                    click.echo(click.style(f"\n⚠ 当前 API 失败，自动切换到 {provider_name}...", fg="yellow"))
+                    click.echo(click.style(f"\n⚠ Current API failed, automatically switching to {provider_name}...", fg="yellow"))
                     self.ai_provider = provider
                     self.question_generator.ai_provider = provider
                     self.chatbot.ai_provider = provider
@@ -124,32 +124,28 @@ class InteractiveInterface:
                 result = await self.question_generator.generate_questions(context_data)
 
                 if i > 0:  # Successfully switched
-                    click.echo(click.style(f"✓ 已成功切换到 {provider_name}\n", fg="green"))
+                    click.echo(click.style(f"✓ Successfully switched to {provider_name}\n", fg="green"))
                 break  # Success, exit loop
 
             except Exception as e:
                 last_error = e
                 if i == 0:  # First provider failed
                     provider_name = provider.__class__.__name__.replace('Provider', '')
-                    click.echo(click.style(f"⚠ {provider_name} 失败: {e}", fg="yellow"))
+                    click.echo(click.style(f"⚠ {provider_name} failed: {e}", fg="yellow"))
                 continue  # Try next provider
 
         # All providers failed
         if result is None:
-            click.echo(click.style(f"\n✗ 所有 API 提供商均失败", fg="red"))
-            click.echo(click.style(f"最后错误: {last_error}", fg="red"))
-            click.echo("\n可能的原因:")
-            click.echo("  1. API 余额不足")
-            click.echo("  2. API 密钥无效")
-            click.echo("  3. 网络连接问题")
-            click.echo("  4. API 服务暂时不可用")
-            click.echo("\n请检查配置后重试。")
+            click.echo(click.style(f"\n✗ All API providers failed", fg="red"))
+            click.echo(click.style(f"Last error: {last_error}", fg="red"))
+            click.echo("\nPossible causes:")
+            click.echo("  1. Insufficient API balance")
+            click.echo("  2. Invalid API key")
+            click.echo("  3. Network connection issue")
+            click.echo("  4. API service temporarily unavailable")
+            click.echo("\nPlease check your configuration and try again.")
             self._handle_exit()
             return
-            else:
-                click.echo("请检查 API 配置或稍后重试。")
-                self._handle_exit()
-                return
 
         # Display question
         click.echo(click.style(result.question, fg="yellow", bold=True))

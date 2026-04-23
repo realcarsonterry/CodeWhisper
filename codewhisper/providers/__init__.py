@@ -2,7 +2,7 @@
 
 This module provides a unified interface for interacting with different AI providers
 including Claude (Anthropic), OpenAI, DeepSeek, GLM (Zhipu AI), Google Gemini,
-Cohere, Mistral AI, Qwen (通义千问), Moonshot (月之暗面), Baidu ERNIE, and Hugging Face.
+Cohere, Mistral AI, Qwen (Tongyi Qianwen), Moonshot (Kimi), Baidu ERNIE, and Hugging Face.
 
 Example usage:
     from codewhisper.providers import ClaudeProvider, OpenAIProvider, GeminiProvider

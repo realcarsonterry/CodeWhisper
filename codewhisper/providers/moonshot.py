@@ -1,4 +1,4 @@
-"""Moonshot (月之暗面) provider implementation."""
+"""Moonshot (Kimi) provider implementation."""
 
 from typing import Dict, Any, AsyncIterator, Optional
 from openai import AsyncOpenAI
@@ -6,7 +6,7 @@ from codewhisper.providers.base import AIProvider
 
 
 class MoonshotProvider(AIProvider):
-    """Moonshot (月之暗面) provider using OpenAI-compatible interface.
+    """Moonshot (Kimi) provider using OpenAI-compatible interface.
 
     This provider connects to Moonshot AI's API using the OpenAI SDK
     with a custom base URL. Moonshot is known for its long-context models.

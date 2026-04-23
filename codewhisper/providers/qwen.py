@@ -1,4 +1,4 @@
-"""Qwen (通义千问) provider implementation."""
+"""Qwen (Tongyi Qianwen) provider implementation."""
 
 from typing import Dict, Any, AsyncIterator, Optional
 from openai import AsyncOpenAI
@@ -6,7 +6,7 @@ from codewhisper.providers.base import AIProvider
 
 
 class QwenProvider(AIProvider):
-    """Qwen (通义千问) provider using OpenAI-compatible interface.
+    """Qwen (Tongyi Qianwen) provider using OpenAI-compatible interface.
 
     This provider connects to Alibaba Cloud's Qwen API using the OpenAI SDK
     with a custom base URL. Qwen is developed by Alibaba Cloud.

@@ -118,7 +118,7 @@ class ERNIEProvider(AIProvider):
             messages = []
             if system_prompt:
                 messages.append({"role": "user", "content": system_prompt})
-                messages.append({"role": "assistant", "content": "好的，我明白了。"})
+                messages.append({"role": "assistant", "content": "Understood."})
 
             messages.append({"role": "user", "content": message})
 
@@ -180,7 +180,7 @@ class ERNIEProvider(AIProvider):
             messages = []
             if system_prompt:
                 messages.append({"role": "user", "content": system_prompt})
-                messages.append({"role": "assistant", "content": "好的，我明白了。"})
+                messages.append({"role": "assistant", "content": "Understood."})
 
             messages.append({"role": "user", "content": message})
 

@@ -133,7 +133,7 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
         click.echo(click.style(f"\n✓ Loaded {len(providers)} provider(s)", fg="green"))
 
         # Check provider health
-        click.echo(click.style("\n检查 API 健康状态...", fg="cyan"))
+        click.echo(click.style("\nChecking API health status...", fg="cyan"))
         healthy_providers = []
         unhealthy_providers = []
 
@@ -161,21 +161,21 @@ def scan(path: str, provider: Optional[str], max_agents: int, no_interactive: bo
             provider_name = prov.__class__.__name__.replace('Provider', '')
             if is_healthy:
                 healthy_providers.append(prov)
-                click.echo(f"  ✓ {provider_name} ({prov.model}) - " + click.style("可用", fg="green"))
+                click.echo(f"  ✓ {provider_name} ({prov.model}) - " + click.style("Available", fg="green"))
             else:
                 unhealthy_providers.append(prov)
-                click.echo(f"  ✗ {provider_name} ({prov.model}) - " + click.style("不可用 (余额不足或网络问题)", fg="red"))
+                click.echo(f"  ✗ {provider_name} ({prov.model}) - " + click.style("Unavailable (insufficient balance or network issue)", fg="red"))
 
         if not healthy_providers:
-            click.echo(click.style("\n✗ 所有配置的 API 都不可用", fg="red"))
-            click.echo("请检查:")
-            click.echo("  1. API 密钥是否正确")
-            click.echo("  2. 账户余额是否充足")
-            click.echo("  3. 网络连接是否正常")
+            click.echo(click.style("\n✗ All configured APIs are unavailable", fg="red"))
+            click.echo("Please check:")
+            click.echo("  1. API keys are correct")
+            click.echo("  2. Account balance is sufficient")
+            click.echo("  3. Network connection is stable")
             sys.exit(1)
 
         if unhealthy_providers:
-            click.echo(click.style(f"\n⚠ {len(unhealthy_providers)} 个 API 不可用，将使用 {len(healthy_providers)} 个可用的 API", fg="yellow"))
+            click.echo(click.style(f"\n⚠ {len(unhealthy_providers)} API(s) unavailable, will use {len(healthy_providers)} available API(s)", fg="yellow"))
 
         # Use only healthy providers
         providers = healthy_providers
