@@ -42,7 +42,7 @@ class QuestionGenerator:
         self.ai_provider = ai_provider
         self.knowledge_base = []
 
-    def generate_questions(self, context: Dict[str, Any]) -> QuestionResult:
+    async def generate_questions(self, context: Dict[str, Any]) -> QuestionResult:
         """Generate 8 high-quality options based on context.
 
         Args:
@@ -74,7 +74,7 @@ class QuestionGenerator:
 
             # Call AI to generate questions
             logger.info(f"Generating questions for context type: {context['type']}")
-            response = self.ai_provider.send_message(
+            response = await self.ai_provider.send_message(
                 message=prompt,
                 system_prompt=self._get_system_prompt(),
                 temperature=0.7,

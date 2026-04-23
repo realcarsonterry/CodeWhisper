@@ -104,7 +104,7 @@ class InteractiveInterface:
         # Generate questions based on current context
         try:
             context_data = self._build_question_context()
-            result = self.question_generator.generate_questions(context_data)
+            result = await self.question_generator.generate_questions(context_data)
         except Exception as e:
             click.echo(click.style(f"Failed to generate questions: {e}", fg="red"))
             click.echo("Using default options...\n")
